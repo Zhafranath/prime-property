@@ -1,0 +1,8 @@
+{
+  "name": "Prime Property Platform",
+  "description": "Luxury property platform specializing in Ruko & Villa listings, equipped with a comprehensive agent management portal, real-time URL-synced search, audit logging, and role-based access control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

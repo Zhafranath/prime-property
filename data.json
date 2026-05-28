@@ -1,0 +1,348 @@
+{
+  "agents": {
+    "superadmin": {
+      "username": "superadmin",
+      "fullName": "Ahmad Syarif",
+      "role": "superadmin",
+      "created_at": "2026-05-28T04:39:16.203Z",
+      "salt": "e32f79888f76cb1cfcb93fc9717eb320",
+      "passwordHash": "65033aa9772e1bdb20f3ba89b9e120d2c322caca2bd190ef9066870f5b9a8ad95c056f62034611280b1418f758c9d9c239132729e6b7646838b1b3f9cf9727ff"
+    },
+    "agent_budi": {
+      "username": "agent_budi",
+      "fullName": "Budi Santoso",
+      "role": "admin",
+      "created_at": "2026-05-28T04:39:16.207Z",
+      "salt": "bb8eacc5f7168f21897f426a2fbca66c",
+      "passwordHash": "11b38a1a338e96d9375a68773a845c175c956c187fe4d21371cdc74cbba418138da8464d294121c8d8ee113db8d1d71b97c94ab70da2a2d7dadf360ce67d1400"
+    },
+    "agent_siti": {
+      "username": "agent_siti",
+      "fullName": "Siti Aminah",
+      "role": "admin",
+      "created_at": "2026-05-28T04:39:16.209Z",
+      "salt": "a62779da902e3bf7ffb0f83a9a970571",
+      "passwordHash": "36328f2bbcae7cd35dc8fd1dc2865693b8c85989f1fc9da4e55eadb5b7c0a93813825c7e91e036f50f363d8d959d0600ffc70e8f4bc57416d066cca89405b2bc"
+    }
+  },
+  "properties": [
+    {
+      "id": "prop_1",
+      "nama": "Ruko Golden Boulevard Row 3",
+      "group": "Golden Boulevard Series",
+      "lebar": 5,
+      "panjang": 15,
+      "hadap": [
+        "Utara"
+      ],
+      "tipe": "Ruko",
+      "tingkat": 3,
+      "price": 2450000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Gading+Serpong+Boulevard",
+      "kawasan": "Gading Serpong",
+      "unit": "C-12",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "superadmin",
+      "deleted_at": null,
+      "nama_property": "Ruko Golden Boulevard Row 3"
+    },
+    {
+      "id": "prop_2",
+      "nama": "Villa Sanctuary Uluwatu Cliffs",
+      "group": "Sanctury Ocean Suites",
+      "lebar": 18,
+      "panjang": 32,
+      "hadap": [
+        "Selatan"
+      ],
+      "tipe": "Villa",
+      "tingkat": 2,
+      "price": 15500000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Uluwatu+Bali",
+      "kawasan": "Canggu",
+      "unit": "Block E-3",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "superadmin",
+      "deleted_at": null,
+      "nama_property": "Villa Sanctuary Uluwatu Cliffs"
+    },
+    {
+      "id": "prop_3",
+      "nama": "Ruko Cordoba Premium PIK",
+      "group": "Cordoba Lakefront",
+      "lebar": 6,
+      "panjang": 18,
+      "hadap": [
+        "Timur"
+      ],
+      "tipe": "Ruko",
+      "tingkat": 4,
+      "price": 4950000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Pantai+Indah+Kapuk",
+      "kawasan": "PIK",
+      "unit": "A-5",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_budi",
+      "deleted_at": null,
+      "nama_property": "Ruko Cordoba Premium PIK"
+    },
+    {
+      "id": "prop_4",
+      "nama": "Villa Lavender Ubud Forest View",
+      "group": "Lavender Valley Residence",
+      "lebar": 12,
+      "panjang": 25,
+      "hadap": [
+        "Barat"
+      ],
+      "tipe": "Villa",
+      "tingkat": 2,
+      "price": 6800000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Ubud+Jungle",
+      "kawasan": "Ubud",
+      "unit": "Suite A-9",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_budi",
+      "deleted_at": null,
+      "nama_property": "Villa Lavender Ubud Forest View"
+    },
+    {
+      "id": "prop_5",
+      "nama": "Ruko Foresta Business Loft 5",
+      "group": "Foresta Signature",
+      "lebar": 8,
+      "panjang": 20,
+      "hadap": [
+        "Utara"
+      ],
+      "tipe": "Ruko",
+      "tingkat": 5,
+      "price": 8200000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_kosong",
+      "maps_link": "https://maps.google.com/?q=Foresta+BSD",
+      "kawasan": "BSD",
+      "unit": "FBL-51",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_siti",
+      "deleted_at": null,
+      "nama_property": "Ruko Foresta Business Loft 5"
+    },
+    {
+      "id": "prop_6",
+      "nama": "Villa Seminyak Suite Royale",
+      "group": "Royale Heights Seminyak",
+      "lebar": 15,
+      "panjang": 30,
+      "hadap": [
+        "Selatan"
+      ],
+      "tipe": "Villa",
+      "tingkat": 2,
+      "price": 11200000000,
+      "carport": true,
+      "status": "sold_out",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Seminyak+Beach",
+      "kawasan": "Seminyak",
+      "unit": "Villa 3",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "superadmin",
+      "deleted_at": null,
+      "nama_property": "Villa Seminyak Suite Royale"
+    },
+    {
+      "id": "prop_7",
+      "nama": "Luxury Mansion Menteng Residence",
+      "group": "Menteng Heritage Estates",
+      "lebar": 25,
+      "panjang": 45,
+      "hadap": [
+        "Timur"
+      ],
+      "tipe": "Villa",
+      "tingkat": 3,
+      "price": 45000000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Menteng+Jakarta",
+      "kawasan": "Menteng",
+      "unit": "M-45",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "superadmin",
+      "deleted_at": null,
+      "nama_property": "Luxury Mansion Menteng Residence"
+    },
+    {
+      "id": "prop_8",
+      "nama": "Ruko Madison Business Park BSD",
+      "group": "Madison Boulevard Line",
+      "lebar": 4.5,
+      "panjang": 16,
+      "hadap": [
+        "Barat"
+      ],
+      "tipe": "Ruko",
+      "tingkat": 2,
+      "price": 1950000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=BSD+City",
+      "kawasan": "BSD",
+      "unit": "M-18",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_siti",
+      "deleted_at": null,
+      "nama_property": "Ruko Madison Business Park BSD"
+    },
+    {
+      "id": "prop_9",
+      "nama": "Villa Bamboo Nest Canggu Breeze",
+      "group": "Bamboo Tropical Suites",
+      "lebar": 10,
+      "panjang": 22,
+      "hadap": [
+        "Utara"
+      ],
+      "tipe": "Villa",
+      "tingkat": 2,
+      "price": 5200000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Canggu+Beach",
+      "kawasan": "Canggu",
+      "unit": "C-4",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_budi",
+      "deleted_at": null,
+      "nama_property": "Villa Bamboo Nest Canggu Breeze"
+    },
+    {
+      "id": "prop_10",
+      "nama": "Ruko Crown Plaza Gading Serpong",
+      "group": "Crown Boulevard Line",
+      "lebar": 5,
+      "panjang": 17,
+      "hadap": [
+        "Utara"
+      ],
+      "tipe": "Ruko",
+      "tingkat": 3,
+      "price": 3600000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Gading+Serpong+Boulevard",
+      "kawasan": "Gading Serpong",
+      "unit": "D-2",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_siti",
+      "deleted_at": null,
+      "nama_property": "Ruko Crown Plaza Gading Serpong"
+    },
+    {
+      "id": "prop_11",
+      "nama": "Villa cliffside Uluwatu Blue",
+      "group": "Ocean view suites",
+      "lebar": 22,
+      "panjang": 35,
+      "hadap": [
+        "Selatan"
+      ],
+      "tipe": "Villa",
+      "tingkat": 3,
+      "price": 28000000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_kosong",
+      "maps_link": "https://maps.google.com/?q=Uluwatu",
+      "kawasan": "Canggu",
+      "unit": "Cliff-1",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "superadmin",
+      "deleted_at": null,
+      "nama_property": "Villa cliffside Uluwatu Blue"
+    },
+    {
+      "id": "prop_12",
+      "nama": "Ruko Gading Square Center",
+      "group": "Square Town Row",
+      "lebar": 6,
+      "panjang": 22,
+      "hadap": [
+        "Timur"
+      ],
+      "tipe": "Ruko",
+      "tingkat": 4,
+      "price": 5400000000,
+      "carport": true,
+      "status": "in_stock",
+      "siap": "siap_huni",
+      "maps_link": "https://maps.google.com/?q=Gading+Serpong+Boulevard",
+      "kawasan": "Gading Serpong",
+      "unit": "H-8",
+      "created_at": "2026-05-28T04:39:16.212Z",
+      "updated_at": "2026-05-28T04:39:16.212Z",
+      "created_by": "agent_budi",
+      "deleted_at": null,
+      "nama_property": "Ruko Gading Square Center"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log_1",
+      "action": "CREATE",
+      "property_id": "prop_1",
+      "property_nama": "Ruko Golden Boulevard Row 3",
+      "performed_by": "superadmin",
+      "details": "Initial seeded property created.",
+      "timestamp": "2026-05-28T04:39:16.212Z"
+    },
+    {
+      "id": "log_2",
+      "action": "CREATE",
+      "property_id": "prop_2",
+      "property_nama": "Villa Sanctuary Uluwatu Cliffs",
+      "performed_by": "superadmin",
+      "details": "Initial seeded property created.",
+      "timestamp": "2026-05-28T04:39:16.212Z"
+    }
+  ],
+  "contactMessages": [
+    {
+      "id": "msg_1",
+      "fullName": "Hendra Wijaya",
+      "email": "hendra@example.com",
+      "phone": "08123456789",
+      "message": "Saya tertarik dengan Villa Sanctuary Uluwatu Cliffs. Mohon kirim detail penawarannya via email.",
+      "timestamp": "2026-05-28T04:39:16.212Z"
+    }
+  ]
+}
