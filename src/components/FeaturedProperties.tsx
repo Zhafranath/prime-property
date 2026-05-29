@@ -507,9 +507,6 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     <span className="px-5 py-2 rounded-full bg-white/5 backdrop-blur-2xl border border-white/10 text-[9px] font-black tracking-[0.3em] text-white uppercase">
                       {prop.tipe}
                     </span>
-                    <div className="w-12 h-12 rounded-full bg-luxury-gold text-black flex items-center justify-center shadow-[0_10px_30px_rgba(201,169,97,0.4)] group-hover:scale-110 transition-transform duration-500">
-                      <SparklesIcon className="w-5 h-5" />
-                    </div>
                   </div>
 
                   {/* Main Information Plate */}
@@ -530,8 +527,8 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     </div>
 
                     {/* Revealable Specs Table */}
-                    <div className="grid grid-cols-2 gap-8 py-8 border-y border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
-                      <div className="space-y-1">
+                    <div className="grid grid-cols-2 gap-2 py-8 px-12 border border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                      <div className="space-y-1 space-x-4">
                         <span className="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em]">{t("card.land_area")}</span>
                         <div className="flex items-baseline gap-1">
                           <span className="text-lg font-black text-white font-mono tracking-tighter">{prop.lebar * prop.panjang}</span>
@@ -548,10 +545,10 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     </div>
 
                     {/* Interaction Footer */}
-                    <div className="flex items-center justify-between pt-4">
+                    <div className="flex items-center justify-between pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-200">
                       <div className="flex flex-col">
                         <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.5em] mb-1.5">{t("card.investment")}</span>
-                        <span className="text-2xl font-black text-white font-mono tracking-tighter">{formatRupiah(prop.price)}</span>
+                        <span className="text-xl font-black text-white font-mono tracking-tighter">{formatRupiah(prop.price)}</span>
                       </div>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -560,7 +557,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                           setSelectedDetailProperty(prop);
                           setIsDetailModalOpen(true);
                         }}
-                        className="px-8 py-4 bg-white text-black font-black text-[10px] tracking-[0.3em] uppercase rounded-full shadow-2xl hover:bg-luxury-gold transition-all duration-300 cursor-pointer"
+                        className="px-8 py-4 bg-white text-black font-black text-[10px] tracking-[0.3em] uppercase rounded-xl shadow-2xl hover:bg-luxury-gold transition-all duration-300 cursor-pointer"
                       >
                         {t("card.explore")}
                       </motion.button>

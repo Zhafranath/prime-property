@@ -403,7 +403,7 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
                       <span className="block text-[8px] uppercase font-mono tracking-widest text-[#C9A961] font-bold">PROYEKSI HARGA NETT</span>
                       <span className="text-[10px] text-gray-400 font-light block">Bebas Pajak Pemeliharaan &amp; Administrasi Awal</span>
                     </div>
-                    <span className="text-xl sm:text-2xl font-black text-luxury-gold tracking-tight font-mono">
+                    <span className="text-xl sm:text-sm font-black text-luxury-gold tracking-tight font-mono">
                       {formatRupiah(property.price)}
                     </span>
                   </div>
