@@ -614,7 +614,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
             </button>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Public Property Detail Showcase Modal */}
       <PublicPropertyDetailModal
