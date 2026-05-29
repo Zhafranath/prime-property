@@ -1,0 +1,22 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Left Shape: Gold Chevron Wing -->
+  <path d="M17 56 L44 26 V76 H35 V43 L17 66 V56 Z" fill="url(#goldLogoGrad)" />
+  
+  <!-- Middle Shape: Crimson Red Pillar -->
+  <path d="M48 22 L55 14 V80 L48 88 Z" fill="url(#redLogoGrad)" />
+  
+  <!-- Right Shape: White Stylized "P" -->
+  <path d="M59 26 V88 H66 V64 H79 L89 52 L79 40 H66 V26 Z M66 47 H76 L80 52 L76 57 H66 V47 Z" fill="#FFFFFF" />
+
+  <defs>
+    <linearGradient id="goldLogoGrad" x1="17" y1="26" x2="44" y2="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#E5C158" />
+      <stop offset="50%" stopColor="#C9A961" />
+      <stop offset="100%" stopColor="#96701B" />
+    </linearGradient>
+    <linearGradient id="redLogoGrad" x1="48" y1="14" x2="55" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#EF4444" />
+      <stop offset="100%" stopColor="#991B1B" />
+    </linearGradient>
+  </defs>
+</svg>
