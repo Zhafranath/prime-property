@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import { Property } from "../types";
 import { formatRupiah } from "./FeaturedProperties";
 import ImageWithFallback from "./ImageWithFallback";
+import BlueprintSchema from "./BlueprintSchema";
 
 interface PublicPropertyDetailModalProps {
   isOpen: boolean;
@@ -259,14 +260,22 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
 
               {/* Design Image Frame */}
               <div className="relative h-64 sm:h-72 rounded-xl overflow-hidden border border-luxury-gold/15 bg-neutral-900 group">
-                <ImageWithFallback
-                  src={images[activeTab]}
-                  alt="Desain Visual Properti"
-                  isVilla={property.tipe === "Villa"}
-                  propertyName={property.nama_property || property.nama}
-                  propertyGroup={property.group || ""}
-                  className="group-hover:scale-105 transition-transform duration-700"
-                />
+                {activeTab === "blueprint" ? (
+                  <BlueprintSchema 
+                    type={property.tipe as "Villa" | "Ruko"}
+                    propertyName={property.nama_property || property.nama}
+                    dimensions={{ width: property.lebar, length: property.panjang }}
+                  />
+                ) : (
+                  <ImageWithFallback
+                    src={images[activeTab]}
+                    alt="Desain Visual Properti"
+                    isVilla={property.tipe === "Villa"}
+                    propertyName={property.nama_property || property.nama}
+                    propertyGroup={property.group || ""}
+                    className="group-hover:scale-105 transition-transform duration-700"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
                 
                 {/* Overlay text detail block */}

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Search, Compass, Grid, Layers, MapPin, Car, DollarSign, RefreshCw, Layers3, SlidersHorizontal, ChevronDown, ChevronUp, CheckCircle, Clock } from "lucide-react";
+import { Search, Compass, Grid, Layers, MapPin, Car, DollarSign, RefreshCw, Layers3, SlidersHorizontal, ChevronDown, ChevronUp, CheckCircle, Clock, Sparkles as SparklesIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Property, PropertyType, PropertyStatus, CompassDirection } from "../types";
 import PublicPropertyDetailModal, { getPropertyImages } from "./PublicPropertyDetailModal";
 import ImageWithFallback from "./ImageWithFallback";
@@ -41,7 +41,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -159,280 +159,301 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
     return true;
   });
 
-  const containerVariants = {
+  const heroContainerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1
+        staggerChildren: 0.15,
+        delayChildren: 0.2
       }
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 25, filter: "blur(6px)" },
+  const heroItemVariants = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
     show: {
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
-      transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      className="w-full"
-    >
+    <div className="w-full relative overflow-hidden bg-luxury-black">
       {/* Hero Banner Section with Smooth Transitioning Property Background Slideshow */}
-      <div className="relative py-24 sm:py-28 px-4 sm:px-6 lg:px-8 border-b border-luxury-gold/10 overflow-hidden flex items-center justify-center min-h-[460px]">
+      <div className="relative py-32 sm:py-40 px-4 sm:px-6 lg:px-8 border-b border-luxury-gold/10 overflow-hidden flex items-center justify-center min-h-[600px] noise-overlay">
         {/* Slideshow backgrounds */}
         <div className="absolute inset-0 z-0">
-          {heroImages.map((img, idx) => (
-            <div
-              key={idx}
-              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-                idx === currentHeroIndex ? "opacity-35 scale-100" : "opacity-0 scale-105"
-              } transform duration-[5000ms] pointer-events-none`}
-              style={{ backgroundImage: `url(${img})` }}
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={currentHeroIndex}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 0.4, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${heroImages[currentHeroIndex]})` }}
             />
-          ))}
+          </AnimatePresence>
           {/* Subtle gradient layers for cinematic look & high contrast text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/75 to-black/50 z-1 pointer-events-none" />
-          <div className="absolute inset-0 bg-radial-gradient from-transparent to-luxury-black/95 z-1 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/60 to-transparent z-1 pointer-events-none" />
+          <div className="absolute inset-0 bg-radial-gradient from-transparent to-luxury-black/80 z-1 pointer-events-none" />
         </div>
 
         {/* Hero Content (above slideshow) */}
-        <motion.div variants={itemVariants} className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-          <div className="inline-flex items-center space-x-2 bg-luxury-gold/15 border border-luxury-gold/35 px-4 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest text-luxury-gold uppercase gold-glow backdrop-blur-sm">
-            <span>♛ PORTOFOLIO INVESTASI & AKUISISI ULTRA-LUKSU</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none drop-shadow-lg">
-            Apresiasi Mahakarya Arsitektur <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-luxury-gold via-yellow-400 to-yellow-600">
-              Modern & Luxury Elite
+        <motion.div 
+          variants={heroContainerVariants}
+          initial="hidden"
+          animate="show"
+          className="max-w-5xl mx-auto text-center space-y-8 relative z-10"
+        >
+          <motion.div variants={heroItemVariants} className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-5 py-2 rounded-full backdrop-blur-md">
+            <div className="w-2 h-2 rounded-full bg-luxury-gold animate-pulse" />
+            <span className="text-[10px] font-black tracking-[0.4em] text-white uppercase subheading-luxury">
+              ESTATE & ARCHITECTURAL MASTERY
             </span>
-          </h1>
-          <p className="text-sm sm:text-base md:text-lg text-gray-200 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
-            Gerbang eksklusif kepemilikan Ruang Bisnis Komersial (Ruko) paling strategis serta Villa prestisius bersertifikasi hukum mutlak di kawasan episentrum pertumbuhan finansial Indonesia.
-          </p>
+          </motion.div>
+          
+          <motion.h1 variants={heroItemVariants} className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.9] heading-luxury">
+            Apresiasi Mahakarya <br />
+            <span className="metallic-gold">
+              Arsitektur Modern
+            </span>
+          </motion.h1>
+          
+          <motion.p variants={heroItemVariants} className="text-sm sm:text-base md:text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed tracking-wide">
+            Platform eksklusif yang mengkurasi aset real estate dengan standar estetika tertinggi. 
+            Menjamin keamanan legalitas mutlak bagi visi investasi jangka panjang Anda.
+          </motion.p>
         </motion.div>
       </div>
 
-      <motion.div 
-        variants={containerVariants} 
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.03 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-      >
-        {/* Real-time Filter Panel */}
-        <motion.div variants={itemVariants} className="glass-panel p-6 sm:p-8 rounded-2xl border border-luxury-gold/20 shadow-xl gold-glow mb-12 bg-luxury-black/90">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-20">
+        {/* Real-time Filter Panel - Transformed into a Sleek Dock */}
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="glass-dock p-8 sm:p-10 rounded-3xl shadow-2xl gold-glow-strong"
+        >
           {/* Flex header row */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-luxury-gold/15 mb-6">
-            <div>
-              <h2 className="text-lg font-bold text-white tracking-wide">Instrumen Pencarian Aset Terintegrasi</h2>
-              <p className="text-xs text-gray-450 mt-1">Saring secara presisi berdasarkan preferensi spesifikasi bangunan, tata letak, dan rentang alokasi dana.</p>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-white/5 mb-8">
+            <div className="space-y-1">
+              <h2 className="text-xl font-black text-white tracking-tight">Pencarian Instrumen Aset</h2>
+              <p className="text-xs text-gray-400 font-medium tracking-wide">Saring spesifikasi secara presisi melalui integrasi data real-time.</p>
             </div>
             
             {/* Control Cluster */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-4">
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`flex items-center space-x-2 text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-lg border transition-all cursor-pointer ${
+                className={`flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-xl border transition-all cursor-pointer ${
                   showAdvanced 
-                    ? "bg-luxury-gold text-luxury-black border-luxury-gold" 
-                    : "text-luxury-gold border-luxury-gold/30 hover:border-luxury-gold/60 bg-luxury-gold/5 hover:bg-luxury-gold/20"
+                    ? "bg-white text-black border-white" 
+                    : "text-white border-white/10 hover:border-luxury-gold/50 bg-white/5 hover:bg-white/10"
                 }`}
-                id="btn-toggle-advanced"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 <span>Filter Lanjutan</span>
-                {showAdvanced ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
+                {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
               
               <button
                 onClick={handleResetFilters}
-                className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 px-4 py-2.5 rounded-lg transition-all cursor-pointer"
-                id="btn-reset-filters"
+                className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 px-6 py-3 rounded-xl transition-all cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                <span>Bersihkan</span>
+                <span>Reset</span>
               </button>
             </div>
           </div>
 
           {/* Core Simplified Filters (Grid) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Search Input */}
-            <div className="relative">
-              <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Pencarian Unit Spesifik</label>
-              <div className="relative">
-                <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Spesifikasi Unit</label>
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-luxury-gold transition-colors" />
                 <input
                   type="text"
-                  placeholder="Masukkan nama komplek ruko, villa, kode blok..."
+                  placeholder="Nama komplek, unit, atau tipe..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all placeholder:text-gray-650 font-medium"
-                  id="filter-search-input"
+                  className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all placeholder:text-gray-600 font-semibold"
                 />
               </div>
             </div>
 
             {/* Tipe Properti */}
-            <div>
-              <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Klasifikasi Aset</label>
-              <div className="relative">
-                <Grid className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Klasifikasi Aset</label>
+              <div className="relative group">
+                <Grid className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-luxury-gold transition-colors" />
                 <select
                   value={tipe}
                   onChange={(e) => setTipe(e.target.value)}
-                  className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all cursor-pointer font-medium appearance-none"
-                  id="filter-tipe-select"
+                  className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                 >
-                  <option value="">Semua Goliaths (Ruko & Villa)</option>
-                  <option value="Ruko">Ruko Komersial (High Yield)</option>
-                  <option value="Villa">Villa Eksklusif (Luxurious Living)</option>
+                  <option value="" className="bg-luxury-black">Semua Tipe Aset</option>
+                  <option value="Ruko" className="bg-luxury-black">Ruko Komersial (High Yield)</option>
+                  <option value="Villa" className="bg-luxury-black">Villa Eksklusif (Ultra Lux)</option>
                 </select>
               </div>
             </div>
 
             {/* Kawasan / Region Select */}
-            <div>
-              <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Kawasan</label>
-              <div className="relative">
-                <MapPin className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Area & Distrik</label>
+              <div className="relative group">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-luxury-gold transition-colors" />
                 <select
                   value={kawasan}
                   onChange={(e) => setKawasan(e.target.value)}
-                  className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all cursor-pointer font-medium appearance-none"
-                  id="filter-kawasan-select"
+                  className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                 >
-                  <option value="">Semua Kawasan</option>
+                  <option value="" className="bg-luxury-black">Seluruh Indonesia</option>
                   {availableKawasan.map((k) => (
-                    <option key={k} value={k}>{k}</option>
+                    <option key={k} value={k} className="bg-luxury-black">{k}</option>
                   ))}
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Expandable Advanced Options (reveals smoothly when requested) */}
-          {showAdvanced && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6 border-t border-luxury-gold/10 mt-6 animate-slide-down">
-              {/* Status Properti */}
-              <div>
-                <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Status Properti</label>
-                <div className="relative">
-                  <Layers className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all cursor-pointer font-medium appearance-none"
-                    id="filter-status-select"
-                  >
-                    <option value="">Semua Status</option>
-                    <option value="in_stock">Tersedia (In Stock)</option>
-                    <option value="sold_out">Telah Terjual (Sold Out)</option>
-                  </select>
-                </div>
-              </div>
+          {/* Expandable Advanced Options */}
+          <AnimatePresence>
+            {showAdvanced && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-white/5 mt-8">
+                  {/* Status Properti */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Ketersediaan</label>
+                    <div className="relative">
+                      <Layers className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <select
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
+                      >
+                        <option value="" className="bg-luxury-black">Status Unit</option>
+                        <option value="in_stock" className="bg-luxury-black">Tersedia (Ready)</option>
+                        <option value="sold_out" className="bg-luxury-black">Terarsip (Sold)</option>
+                      </select>
+                    </div>
+                  </div>
 
-              {/* Rentang Harga Minimum */}
-              <div>
-                <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Harga Minimum (Rp)</label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
-                  <input
-                    type="number"
-                    placeholder="Min (Contoh: 2 Miliar)"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all placeholder:text-gray-650 font-medium font-mono"
-                    id="filter-minprice-input"
-                  />
-                </div>
-              </div>
+                  {/* Rentang Harga Minimum */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Budget Min (Rp)</label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="number"
+                        placeholder="Contoh: 5 Miliar"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all font-mono"
+                      />
+                    </div>
+                  </div>
 
-              {/* Rentang Harga Maksimum */}
-              <div>
-                <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Harga Maksimum (Rp)</label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
-                  <input
-                    type="number"
-                    placeholder="Max (Contoh: 15 Miliar)"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all placeholder:text-gray-650 font-medium font-mono"
-                    id="filter-maxprice-input"
-                  />
-                </div>
-              </div>
+                  {/* Rentang Harga Maksimum */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Budget Max (Rp)</label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="number"
+                        placeholder="Contoh: 50 Miliar"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all font-mono"
+                      />
+                    </div>
+                  </div>
 
-              {/* Arah Hadap */}
-              <div>
-                <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Arah Hadap</label>
-                <div className="relative">
-                  <Compass className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
-                  <select
-                    value={hadap}
-                    onChange={(e) => setHadap(e.target.value)}
-                    className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all cursor-pointer font-medium appearance-none"
-                    id="filter-hadap-select"
-                  >
-                    <option value="">Semua Arah</option>
-                    <option value="Utara">Hadap Utara</option>
-                    <option value="Timur">Hadap Timur</option>
-                    <option value="Selatan">Hadap Selatan</option>
-                    <option value="Barat">Hadap Barat</option>
-                  </select>
-                </div>
-              </div>
+                  {/* Arah Hadap */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Vektor Hadap</label>
+                    <div className="relative">
+                      <Compass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <select
+                        value={hadap}
+                        onChange={(e) => setHadap(e.target.value)}
+                        className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
+                      >
+                        <option value="" className="bg-luxury-black">Semua Vektor</option>
+                        <option value="Utara" className="bg-luxury-black">Utara</option>
+                        <option value="Timur" className="bg-luxury-black">Timur</option>
+                        <option value="Selatan" className="bg-luxury-black">Selatan</option>
+                        <option value="Barat" className="bg-luxury-black">Barat</option>
+                      </select>
+                    </div>
+                  </div>
 
-              {/* Carport */}
-              <div>
-                <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Kapasitas Carport / Garasi</label>
-                <div className="relative">
-                  <Car className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
-                  <select
-                    value={carport}
-                    onChange={(e) => setCarport(e.target.value)}
-                    className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all cursor-pointer font-medium appearance-none"
-                    id="filter-carport-select"
-                  >
-                    <option value="">Semua Fasilitas</option>
-                    <option value="ada">Kawasan dengan Carport</option>
-                    <option value="tidak_ada">Kawasan tanpa Carport</option>
-                  </select>
-                </div>
-              </div>
+                  {/* Carport */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Kapasitas Garasi</label>
+                    <div className="relative">
+                      <Car className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <select
+                        value={carport}
+                        onChange={(e) => setCarport(e.target.value)}
+                        className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
+                      >
+                        <option value="" className="bg-luxury-black">Semua Opsi</option>
+                        <option value="ada" className="bg-luxury-black">Tersedia Carport</option>
+                        <option value="tidak_ada" className="bg-luxury-black">Tanpa Carport</option>
+                      </select>
+                    </div>
+                  </div>
 
-              {/* Readiness */}
-              <div>
-                <label className="block text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Kesiapan Bangunan</label>
-                <div className="relative">
-                  <Layers3 className="absolute left-3.5 top-3.5 w-4 h-4 text-luxury-gold" />
-                  <select
-                    value={siap}
-                    onChange={(e) => setSiap(e.target.value)}
-                    className="w-full bg-luxury-deep text-white text-sm pl-10 pr-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold focus:outline-none transition-all cursor-pointer font-medium appearance-none"
-                    id="filter-siap-select"
-                  >
-                    <option value="">Semua Kondisi</option>
-                    <option value="siap_huni">Siap Huni (Ready)</option>
-                    <option value="siap_kosong">Siap Kosong (Pembangunan)</option>
-                    <option value="siap_huni_renovasi">Tahap Renovasi (Refurbished)</option>
-                  </select>
+                  {/* Readiness */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Fase Konstruksi</label>
+                    <div className="relative">
+                      <Layers3 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <select
+                        value={siap}
+                        onChange={(e) => setSiap(e.target.value)}
+                        className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
+                      >
+                        <option value="" className="bg-luxury-black">Semua Fase</option>
+                        <option value="siap_huni" className="bg-luxury-black">Siap Huni (Immediate)</option>
+                        <option value="siap_kosong" className="bg-luxury-black">Fase Pembangunan</option>
+                        <option value="siap_huni_renovasi" className="bg-luxury-black">Fase Refurbishment</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
+
+        {/* Section Header for Properties */}
+        <div className="mt-24 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <SparklesIcon className="w-4 h-4 text-luxury-gold" />
+              <span className="text-[10px] font-black tracking-[0.3em] text-luxury-gold uppercase">Featured Masterpieces</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Kurasi Aset Terpilih</h2>
+          </div>
+          <div className="flex items-center gap-4 text-xs font-mono text-gray-500 uppercase tracking-widest">
+            <span className="text-white font-bold">{filteredProperties.length}</span> Unit Ditemukan
+          </div>
+        </div>
 
         {/* Properties Grid */}
         {filteredProperties.length > 0 ? (
@@ -442,35 +463,33 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
               show: {
                 opacity: 1,
                 transition: {
-                  staggerChildren: 0.12,
+                  staggerChildren: 0.1,
                 }
               }
             }}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.03 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
           >
             {filteredProperties.map((prop) => (
               <motion.div
                 key={prop.id}
                 variants={{
-                  hidden: { opacity: 0, y: 45, scale: 0.96, filter: "blur(8px)" },
+                  hidden: { opacity: 0, y: 40, scale: 0.98 },
                   show: { 
                     opacity: 1, 
                     y: 0, 
                     scale: 1,
-                    filter: "blur(0px)",
-                    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] }
+                    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
                   }
                 }}
-                className="glass-panel rounded-xl overflow-hidden border border-luxury-gold/10 hover:border-luxury-gold/45 group transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col h-[525px] shadow-lg hover:shadow-luxury-gold/5"
-                id={`property-card-${prop.id}`}
+                whileHover={{ y: -10 }}
+                className="glass-panel rounded-2xl overflow-hidden border border-white/5 hover:border-luxury-gold/30 group transition-all duration-500 flex flex-col h-[560px] shadow-2xl relative"
               >
-                {/* Visual Header / Property Type Accent Card with Real Luxury Design Render */}
-                <div className="relative h-44 border-b border-luxury-gold/10 flex flex-col justify-between p-6 overflow-hidden">
-                  {/* Real-time high-end architectural exterior preview */}
-                  <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                {/* Visual Header */}
+                <div className="relative h-56 border-b border-white/5 flex flex-col justify-between p-8 overflow-hidden">
+                  <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-1000 pointer-events-none">
                     <ImageWithFallback
                       src={getPropertyImages(prop).exterior}
                       alt={prop.nama_property || prop.nama}
@@ -479,133 +498,100 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                       propertyGroup={prop.group || ""}
                     />
                   </div>
-                  {/* Backdrop subtle dark-skew gloss overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/25 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent pointer-events-none"></div>
                   
-                  {/* Premium Hover Light Sweep (Shine Effect) */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none z-10" />
+                  {/* Luxury Shine Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500 ease-out pointer-events-none z-10" />
                   
                   {/* Badges */}
-                  <div className="flex justify-between items-center relative z-10 w-full">
-                    <span className={`px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest rounded-md ${
+                  <div className="flex justify-between items-start relative z-10 w-full">
+                    <span className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-lg backdrop-blur-md border ${
                       prop.tipe === "Villa" 
-                        ? "bg-purple-950/80 text-purple-200 border border-purple-800/50 backdrop-blur-sm" 
-                        : "bg-amber-950/80 text-amber-200 border border-amber-800/50 backdrop-blur-sm"
+                        ? "bg-purple-500/10 text-purple-300 border-purple-500/20" 
+                        : "bg-luxury-gold/10 text-luxury-gold border-luxury-gold/20"
                     }`}>
                       {prop.tipe}
                     </span>
-                    <span className={`px-2.5 py-0.5 text-[9px] font-bold font-mono tracking-wider rounded-full ${
+                    <span className={`px-3 py-1 text-[8px] font-black font-mono tracking-widest rounded-full backdrop-blur-md border ${
                       prop.status === "in_stock"
-                        ? "bg-green-950 text-green-300 border border-green-800/40"
-                        : "bg-red-950/20 text-red-300 border border-red-950/30"
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : "bg-red-500/10 text-red-400 border-red-500/20"
                     }`}>
                       {prop.status === "in_stock" ? "Tersedia" : "Terjual"}
                     </span>
                   </div>
 
-                  {/* Large Icon Type representation inside luxury visual card */}
-                  <div className="flex flex-col items-start relative z-10 mt-2">
+                  <div className="relative z-10">
                     {prop.group && (
-                      <span className="text-[10px] font-mono tracking-widest text-[#C9A961] uppercase block mb-1 font-bold animate-pulse">
+                      <span className="text-[9px] font-black tracking-[0.3em] text-luxury-gold uppercase block mb-2 opacity-80">
                         {prop.group}
                       </span>
                     )}
-                    <h3 className="text-xl font-bold text-white tracking-tight line-clamp-1 group-hover:text-luxury-gold transition-colors duration-200">
+                    <h3 className="text-2xl font-black text-white tracking-tight line-clamp-1 group-hover:metallic-gold transition-all duration-500">
                       {prop.nama_property || prop.nama}
                     </h3>
                   </div>
                 </div>
 
                 {/* Property Detail Parameters */}
-                <div className="p-6 flex flex-col justify-between flex-1 bg-[#151515]/95">
-                  <div className="space-y-4">
-                    {/* Primary Location and Unit Info */}
-                    <div className="flex items-center space-x-2 text-gray-400">
-                      <MapPin className="w-4 h-4 text-luxury-gold flex-shrink-0" />
-                      <span className="text-xs font-semibold uppercase tracking-wider text-gray-200">{prop.kawasan}</span>
-                      {prop.unit && (
-                        <>
-                          <span className="text-gray-650 text-xs">•</span>
-                          <span className="text-xs font-mono bg-luxury-gray-dark px-2 py-0.5 rounded text-gray-400 border border-gray-800">Unit: {prop.unit}</span>
-                        </>
-                      )}
+                <div className="p-8 flex flex-col justify-between flex-1 bg-luxury-black/40">
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                        <MapPin className="w-3.5 h-3.5 text-luxury-gold" />
+                      </div>
+                      <span className="text-xs font-bold uppercase tracking-[0.15em] text-gray-200">{prop.kawasan}</span>
                     </div>
 
-                    {/* Specs Grid */}
-                    <div className="grid grid-cols-2 gap-y-3.5 gap-x-2 pt-2 border-t border-luxury-gold/5">
-                      {/* Dimensi */}
-                      <div className="space-y-0.5">
-                        <span className="block text-[10px] uppercase font-bold tracking-widest text-gray-500">DIMENSI LAHAN</span>
-                        <span className="text-xs font-semibold text-white font-mono">
-                          {prop.lebar} x {prop.panjang} M <span className="text-[10px] text-gray-400 font-sans font-light">({prop.lebar * prop.panjang} m²)</span>
+                    <div className="grid grid-cols-2 gap-y-6 gap-x-4 pt-4 border-t border-white/5">
+                      <div className="space-y-1">
+                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Area Lahan</span>
+                        <span className="text-xs font-black text-white font-mono">
+                          {prop.lebar * prop.panjang} <span className="text-gray-600 font-sans">M²</span>
                         </span>
                       </div>
-
-                      {/* Arah Hadap */}
-                      <div className="space-y-0.5">
-                        <span className="block text-[10px] uppercase font-bold tracking-widest text-gray-500">ARAH HADAP</span>
-                        <span className="text-xs font-semibold text-white flex items-center space-x-1.5 font-sans">
+                      <div className="space-y-1">
+                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Orientasi</span>
+                        <span className="text-xs font-black text-white flex items-center space-x-2">
                           <Compass className="w-3.5 h-3.5 text-luxury-gold" />
-                          <span>Hadap {Array.isArray(prop.hadap) ? prop.hadap.join(", ") : prop.hadap}</span>
+                          <span>{Array.isArray(prop.hadap) ? prop.hadap[0] : prop.hadap}</span>
                         </span>
                       </div>
-
-                      {/* Lantai / Tingkat */}
-                      <div className="space-y-0.5">
-                        <span className="block text-[10px] uppercase font-bold tracking-widest text-gray-500">TINGKAT</span>
-                        <span className="text-xs font-semibold text-white font-sans">
-                          {prop.tingkat} Lantai
+                      <div className="space-y-1">
+                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Elevasi</span>
+                        <span className="text-xs font-black text-white">
+                          {prop.tingkat} <span className="text-gray-600 font-sans">Level</span>
                         </span>
                       </div>
-
-                      {/* Carport */}
-                      <div className="space-y-0.5">
-                        <span className="block text-[10px] uppercase font-bold tracking-widest text-gray-500">CARPORT</span>
-                        <span className="text-xs font-semibold text-white flex items-center space-x-1.5 font-sans">
-                          <Car className="w-3.5 h-3.5 text-luxury-gold" />
-                          <span>{prop.carport ? "Ada Carport" : "Tanpa Carport"}</span>
+                      <div className="space-y-1">
+                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Kesiapan</span>
+                        <span className="text-xs font-black text-white flex items-center space-x-2">
+                          {prop.siap === "siap_huni" ? (
+                            <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : (
+                            <Clock className="w-3.5 h-3.5 text-amber-500" />
+                          )}
+                          <span>{prop.siap === "siap_huni" ? "Ready" : "Process"}</span>
                         </span>
-                      </div>
-                    </div>
-
-                    {/* Ready state and Maps */}
-                    <div className="flex items-center justify-between pt-3 border-t border-luxury-gold/5 text-xs">
-                      <div className="flex items-center space-x-1.5 font-sans">
-                        {prop.siap === "siap_huni" ? (
-                          <>
-                            <CheckCircle className="w-4 h-4 text-green-400" />
-                            <span className="text-green-400 font-medium">Siap Huni</span>
-                          </>
-                        ) : prop.siap === "siap_huni_renovasi" ? (
-                          <>
-                            <SlidersHorizontal className="w-4 h-4 text-orange-400 animate-pulse" />
-                            <span className="text-orange-400 font-medium">Tahap Renovasi</span>
-                          </>
-                        ) : (
-                          <>
-                            <Clock className="w-4 h-4 text-yellow-500" />
-                            <span className="text-yellow-500 font-medium">Siap Kosong</span>
-                          </>
-                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Pricing Footer with interactive design details toggle */}
-                  <div className="mt-5 pt-4 border-t border-luxury-gold/15 flex items-center justify-between">
-                    <button
+                  <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => {
                         setSelectedDetailProperty(prop);
                         setIsDetailModalOpen(true);
                       }}
-                      className="px-3.5 py-2.5 bg-luxury-gold/10 hover:bg-luxury-gold text-luxury-gold hover:text-luxury-black font-extrabold text-[10px] tracking-widest uppercase rounded-lg border border-luxury-gold/30 transition-all cursor-pointer shadow-sm hover:shadow-luxury-gold/20"
-                      id={`btn-view-details-${prop.id}`}
+                      className="px-5 py-3 bg-white/5 hover:bg-white text-white hover:text-black font-black text-[10px] tracking-[0.25em] uppercase rounded-xl border border-white/10 transition-all cursor-pointer shadow-xl"
                     >
-                      Desain & Rincian
-                    </button>
+                      Show Detail
+                    </motion.button>
                     <div className="flex flex-col text-right">
-                      <span className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">HARGA JUAL NETT</span>
-                      <span className="text-base sm:text-lg font-black text-luxury-gold mt-0.5 font-mono">
+                      <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Pricing</span>
+                      <span className="text-lg font-black text-white mt-1 font-mono tracking-tighter">
                         {formatRupiah(prop.price)}
                       </span>
                     </div>
@@ -615,17 +601,17 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
             ))}
           </motion.div>
         ) : (
-          <div className="glass-panel text-center py-16 px-6 rounded-2xl border border-luxury-gold/15 shadow-inner">
-            <span className="text-4xl">🔍</span>
-            <h3 className="text-white text-lg font-bold mt-4">Properti Tidak Ditemukan</h3>
-            <p className="text-gray-400 text-sm max-w-md mx-auto mt-2">
-              Tidak ada listing properti yang sesuai dengan parameter penyaringan Anda. Silakan coba mengubah jangkauan harga atau mencari kawasan lain.
+          <div className="glass-panel text-center py-24 px-8 rounded-3xl border border-white/5 shadow-2xl">
+            <Search className="w-12 h-12 text-gray-700 mx-auto mb-6" />
+            <h3 className="text-white text-xl font-black tracking-tight">Aset Tidak Ditemukan</h3>
+            <p className="text-gray-500 text-sm max-w-md mx-auto mt-3 font-medium">
+              Parameter pencarian Anda terlalu spesifik. Silakan atur ulang filter untuk menemukan instrumen investasi lainnya.
             </p>
             <button
               onClick={handleResetFilters}
-              className="mt-6 inline-flex items-center space-x-2 bg-luxury-gold text-luxury-black font-semibold text-xs uppercase tracking-wider px-5 py-2.5 rounded-lg shadow-md hover:bg-luxury-gold-hover transition-colors cursor-pointer"
+              className="mt-8 inline-flex items-center space-x-3 bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] px-8 py-4 rounded-xl shadow-2xl hover:bg-gray-200 transition-all cursor-pointer"
             >
-              <span>Atur Ulang Pencarian</span>
+              <span>Reset Instrumen</span>
             </button>
           </div>
         )}
@@ -640,6 +626,6 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
         }}
         property={selectedDetailProperty}
       />
-    </motion.div>
+    </div>
   );
 }
