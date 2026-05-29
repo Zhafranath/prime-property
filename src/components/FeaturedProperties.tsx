@@ -218,14 +218,14 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           
           <motion.h1 variants={heroItemVariants} className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.9] heading-luxury">
             Apresiasi Mahakarya <br />
+            Arsitektur <br />
             <span className="metallic-gold">
-              Arsitektur Modern
+              Modern & Luxury Elite
             </span>
           </motion.h1>
           
-          <motion.p variants={heroItemVariants} className="text-sm sm:text-base md:text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed tracking-wide">
-            Platform eksklusif yang mengkurasi aset real estate dengan standar estetika tertinggi. 
-            Menjamin keamanan legalitas mutlak bagi visi investasi jangka panjang Anda.
+          <motion.p variants={heroItemVariants} className="text-sm sm:text-base md:text-xl text-gray-300 max-w-4xl mx-auto font-light leading-relaxed tracking-wide">
+            Gerbang eksklusif kepemilikan Ruang Bisnis Komersial (Ruko) paling strategis serta Villa prestisius bersertifikasi hukum mutlak di kawasan episentrum pertumbuhan finansial Indonesia.
           </motion.p>
         </motion.div>
       </div>
