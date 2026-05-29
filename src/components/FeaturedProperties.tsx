@@ -483,12 +483,13 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
                   }
                 }}
-                whileHover={{ y: -10 }}
-                className="glass-panel rounded-2xl overflow-hidden border border-white/5 hover:border-luxury-gold/30 group transition-all duration-500 flex flex-col h-[560px] shadow-2xl relative"
+                whileHover={{ y: -12 }}
+                className="glass-panel rounded-3xl overflow-hidden border border-white/5 hover:border-luxury-gold/40 group transition-all duration-500 flex flex-col h-[580px] shadow-2xl relative noise-overlay"
+                id={`property-card-${prop.id}`}
               >
-                {/* Visual Header */}
-                <div className="relative h-56 border-b border-white/5 flex flex-col justify-between p-8 overflow-hidden">
-                  <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-1000 pointer-events-none">
+                {/* Visual Header / Property Type Accent Card */}
+                <div className="relative h-64 border-b border-white/5 flex flex-col justify-between p-8 overflow-hidden">
+                  <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-[1.5s] ease-out pointer-events-none">
                     <ImageWithFallback
                       src={getPropertyImages(prop).exterior}
                       alt={prop.nama_property || prop.nama}
@@ -497,103 +498,113 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                       propertyGroup={prop.group || ""}
                     />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/20 to-transparent pointer-events-none"></div>
                   
-                  {/* Luxury Shine Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500 ease-out pointer-events-none z-10" />
+                  {/* Premium Shine Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-2000 ease-out pointer-events-none z-10" />
                   
-                  {/* Badges */}
+                  {/* Top Badges */}
                   <div className="flex justify-between items-start relative z-10 w-full">
-                    <span className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-lg backdrop-blur-md border ${
-                      prop.tipe === "Villa" 
-                        ? "bg-purple-500/10 text-purple-300 border-purple-500/20" 
-                        : "bg-luxury-gold/10 text-luxury-gold border-luxury-gold/20"
-                    }`}>
-                      {prop.tipe}
-                    </span>
-                    <span className={`px-3 py-1 text-[8px] font-black font-mono tracking-widest rounded-full backdrop-blur-md border ${
+                    <div className="flex gap-2">
+                      <span className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.25em] rounded-lg backdrop-blur-xl border ${
+                        prop.tipe === "Villa" 
+                          ? "bg-purple-500/10 text-purple-300 border-purple-500/30" 
+                          : "bg-luxury-gold/10 text-luxury-gold border-luxury-gold/30"
+                      }`}>
+                        {prop.tipe}
+                      </span>
+                      {prop.siap === "siap_huni" && (
+                        <span className="px-3 py-1.5 text-[8px] font-black uppercase tracking-widest rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 backdrop-blur-xl">
+                          READY
+                        </span>
+                      )}
+                    </div>
+                    <span className={`px-3 py-1 text-[8px] font-black font-mono tracking-widest rounded-full backdrop-blur-xl border ${
                       prop.status === "in_stock"
-                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                        : "bg-red-500/10 text-red-400 border-red-500/20"
+                        ? "bg-white/5 text-white/80 border-white/10"
+                        : "bg-red-500/20 text-red-400 border-red-500/30"
                     }`}>
-                      {prop.status === "in_stock" ? "Tersedia" : "Terjual"}
+                      {prop.status === "in_stock" ? "AVAILABLE" : "SOLD OUT"}
                     </span>
                   </div>
 
+                  {/* Property Identity on Image Overlay */}
                   <div className="relative z-10">
                     {prop.group && (
-                      <span className="text-[9px] font-black tracking-[0.3em] text-luxury-gold uppercase block mb-2 opacity-80">
+                      <span className="text-[9px] font-black tracking-[0.4em] text-luxury-gold uppercase block mb-2 opacity-90 drop-shadow-md">
                         {prop.group}
                       </span>
                     )}
-                    <h3 className="text-2xl font-black text-white tracking-tight line-clamp-1 group-hover:metallic-gold transition-all duration-500">
+                    <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight line-clamp-1 group-hover:metallic-gold transition-all duration-700 drop-shadow-lg">
                       {prop.nama_property || prop.nama}
                     </h3>
                   </div>
                 </div>
 
                 {/* Property Detail Parameters */}
-                <div className="p-8 flex flex-col justify-between flex-1 bg-luxury-black/40">
-                  <div className="space-y-6">
+                <div className="p-8 flex flex-col justify-between flex-1 bg-luxury-black/30">
+                  <div className="space-y-8">
+                    {/* Location Badge */}
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
-                        <MapPin className="w-3.5 h-3.5 text-luxury-gold" />
+                      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-luxury-gold/30 transition-colors">
+                        <MapPin className="w-4 h-4 text-luxury-gold" />
                       </div>
-                      <span className="text-xs font-bold uppercase tracking-[0.15em] text-gray-200">{prop.kawasan}</span>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">LOCATION</span>
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-200">{prop.kawasan}</span>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-y-6 gap-x-4 pt-4 border-t border-white/5">
-                      <div className="space-y-1">
-                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Area Lahan</span>
-                        <span className="text-xs font-black text-white font-mono">
-                          {prop.lebar * prop.panjang} <span className="text-gray-600 font-sans">M²</span>
+                    {/* Architectural Specs Grid */}
+                    <div className="grid grid-cols-2 gap-y-8 gap-x-6 pt-6 border-t border-white/5">
+                      <div className="space-y-1.5">
+                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Land Area</span>
+                        <span className="text-sm font-black text-white font-mono">
+                          {prop.lebar * prop.panjang} <span className="text-[10px] text-gray-500 font-sans tracking-normal font-medium">M²</span>
                         </span>
                       </div>
-                      <div className="space-y-1">
-                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Orientasi</span>
-                        <span className="text-xs font-black text-white flex items-center space-x-2">
+                      <div className="space-y-1.5">
+                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Orientation</span>
+                        <span className="text-sm font-black text-white flex items-center space-x-2">
                           <Compass className="w-3.5 h-3.5 text-luxury-gold" />
                           <span>{Array.isArray(prop.hadap) ? prop.hadap[0] : prop.hadap}</span>
                         </span>
                       </div>
-                      <div className="space-y-1">
-                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Elevasi</span>
-                        <span className="text-xs font-black text-white">
-                          {prop.tingkat} <span className="text-gray-600 font-sans">Level</span>
+                      <div className="space-y-1.5">
+                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Elevation</span>
+                        <span className="text-sm font-black text-white">
+                          {prop.tingkat} <span className="text-[10px] text-gray-500 font-sans tracking-normal font-medium">LEVELS</span>
                         </span>
                       </div>
-                      <div className="space-y-1">
-                        <span className="block text-[9px] uppercase font-black tracking-[0.2em] text-gray-500">Kesiapan</span>
-                        <span className="text-xs font-black text-white flex items-center space-x-2">
-                          {prop.siap === "siap_huni" ? (
-                            <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                          ) : (
-                            <Clock className="w-3.5 h-3.5 text-amber-500" />
-                          )}
-                          <span>{prop.siap === "siap_huni" ? "Ready" : "Process"}</span>
+                      <div className="space-y-1.5">
+                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Provision</span>
+                        <span className="text-sm font-black text-white flex items-center space-x-2">
+                          <Car className="w-3.5 h-3.5 text-luxury-gold" />
+                          <span>{prop.carport ? "PRIVATE" : "NONE"}</span>
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+                  {/* Pricing and Action Footer */}
+                  <div className="mt-10 pt-8 border-t border-white/5 flex items-end justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em] mb-1">OFFICIAL PRICE</span>
+                      <span className="text-xl font-black text-white font-mono tracking-tighter group-hover:text-luxury-gold transition-colors duration-500">
+                        {formatRupiah(prop.price)}
+                      </span>
+                    </div>
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ scale: 1.05, backgroundColor: "#C9A961", color: "#050505" }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => {
                         setSelectedDetailProperty(prop);
                         setIsDetailModalOpen(true);
                       }}
-                      className="px-5 py-3 bg-white/5 hover:bg-white text-white hover:text-black font-black text-[10px] tracking-[0.25em] uppercase rounded-xl border border-white/10 transition-all cursor-pointer shadow-xl"
+                      className="px-6 py-3.5 bg-white/5 text-white font-black text-[10px] tracking-[0.3em] uppercase rounded-2xl border border-white/10 transition-all cursor-pointer shadow-2xl backdrop-blur-md"
                     >
-                      Show Detail
+                      EXPLORE
                     </motion.button>
-                    <div className="flex flex-col text-right">
-                      <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Pricing</span>
-                      <span className="text-lg font-black text-white mt-1 font-mono tracking-tighter">
-                        {formatRupiah(prop.price)}
-                      </span>
-                    </div>
                   </div>
                 </div>
               </motion.div>
