@@ -483,13 +483,13 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
                   }
                 }}
-                whileHover={{ y: -12 }}
-                className="glass-panel rounded-3xl overflow-hidden border border-white/5 hover:border-luxury-gold/40 group transition-all duration-500 flex flex-col h-[580px] shadow-2xl relative noise-overlay"
+                whileHover={{ y: -15 }}
+                className="glass-panel rounded-[2rem] overflow-hidden border border-white/5 hover:border-luxury-gold/30 group transition-all duration-700 flex flex-col h-[620px] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.5)] relative noise-overlay"
                 id={`property-card-${prop.id}`}
               >
-                {/* Visual Header / Property Type Accent Card */}
-                <div className="relative h-64 border-b border-white/5 flex flex-col justify-between p-8 overflow-hidden">
-                  <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-[1.5s] ease-out pointer-events-none">
+                {/* Visual Header / Full-Bleed Property Masterpiece */}
+                <div className="relative h-[420px] overflow-hidden group">
+                  <div className="absolute inset-0 group-hover:scale-110 transition-transform duration-[2s] ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none">
                     <ImageWithFallback
                       src={getPropertyImages(prop).exterior}
                       alt={prop.nama_property || prop.nama}
@@ -498,112 +498,112 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                       propertyGroup={prop.group || ""}
                     />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/20 to-transparent pointer-events-none"></div>
                   
-                  {/* Premium Shine Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-2000 ease-out pointer-events-none z-10" />
+                  {/* Cinematic Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-transparent to-transparent opacity-90 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent opacity-60 pointer-events-none"></div>
                   
-                  {/* Top Badges */}
-                  <div className="flex justify-between items-start relative z-10 w-full">
-                    <div className="flex gap-2">
-                      <span className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.25em] rounded-lg backdrop-blur-xl border ${
-                        prop.tipe === "Villa" 
-                          ? "bg-purple-500/10 text-purple-300 border-purple-500/30" 
-                          : "bg-luxury-gold/10 text-luxury-gold border-luxury-gold/30"
-                      }`}>
+                  {/* Signature Luxury Shine */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.05] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[2.5s] ease-out pointer-events-none z-10" />
+                  
+                  {/* Floating Identity Badges */}
+                  <div className="absolute top-8 left-8 right-8 flex justify-between items-start z-20">
+                    <div className="flex flex-col gap-2">
+                      <motion.span 
+                        initial={{ x: -10, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        className={`px-5 py-2 text-[10px] font-black uppercase tracking-[0.3em] rounded-full backdrop-blur-2xl border shadow-2xl ${
+                          prop.tipe === "Villa" 
+                            ? "bg-purple-500/20 text-purple-200 border-purple-400/20" 
+                            : "bg-luxury-gold/20 text-luxury-gold border-luxury-gold/30"
+                        }`}
+                      >
                         {prop.tipe}
-                      </span>
+                      </motion.span>
                       {prop.siap === "siap_huni" && (
-                        <span className="px-3 py-1.5 text-[8px] font-black uppercase tracking-widest rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 backdrop-blur-xl">
-                          READY
+                        <span className="px-4 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/20 backdrop-blur-xl w-fit">
+                          ESTATE READY
                         </span>
                       )}
                     </div>
-                    <span className={`px-3 py-1 text-[8px] font-black font-mono tracking-widest rounded-full backdrop-blur-xl border ${
-                      prop.status === "in_stock"
-                        ? "bg-white/5 text-white/80 border-white/10"
-                        : "bg-red-500/20 text-red-400 border-red-500/30"
-                    }`}>
-                      {prop.status === "in_stock" ? "AVAILABLE" : "SOLD OUT"}
-                    </span>
+                    
+                    <div className="flex flex-col items-end gap-2">
+                      <span className={`px-4 py-1.5 text-[9px] font-black font-mono tracking-widest rounded-full backdrop-blur-2xl border ${
+                        prop.status === "in_stock"
+                          ? "bg-white/10 text-white border-white/20"
+                          : "bg-red-500/30 text-red-200 border-red-400/30"
+                      }`}>
+                        {prop.status === "in_stock" ? "EXCLUSIVE" : "SOLD"}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Property Identity on Image Overlay */}
-                  <div className="relative z-10">
+                  {/* Integrated Content Over Image */}
+                  <div className="absolute bottom-10 left-8 right-8 z-20 space-y-3">
                     {prop.group && (
-                      <span className="text-[9px] font-black tracking-[0.4em] text-luxury-gold uppercase block mb-2 opacity-90 drop-shadow-md">
+                      <motion.span 
+                        whileHover={{ x: 5 }}
+                        className="text-[10px] font-black tracking-[0.5em] text-luxury-gold uppercase block opacity-90 drop-shadow-2xl"
+                      >
                         {prop.group}
-                      </span>
+                      </motion.span>
                     )}
-                    <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight line-clamp-1 group-hover:metallic-gold transition-all duration-700 drop-shadow-lg">
+                    <h3 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight group-hover:metallic-gold transition-all duration-700 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                       {prop.nama_property || prop.nama}
                     </h3>
+                    <div className="flex items-center space-x-3 pt-2">
+                      <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center">
+                        <MapPin className="w-3.5 h-3.5 text-luxury-gold" />
+                      </div>
+                      <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-200 drop-shadow-lg">{prop.kawasan}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Property Detail Parameters */}
-                <div className="p-8 flex flex-col justify-between flex-1 bg-luxury-black/30">
-                  <div className="space-y-8">
-                    {/* Location Badge */}
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-luxury-gold/30 transition-colors">
-                        <MapPin className="w-4 h-4 text-luxury-gold" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">LOCATION</span>
-                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-200">{prop.kawasan}</span>
+                {/* Refined Technical Parameters Area */}
+                <div className="p-10 flex flex-col justify-between flex-1 bg-gradient-to-b from-transparent to-luxury-black/60 relative">
+                  {/* Subtle Grid Accent */}
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+
+                  <div className="grid grid-cols-2 gap-y-10 gap-x-8 relative z-10">
+                    <div className="space-y-2 group/stat">
+                      <span className="block text-[9px] uppercase font-black tracking-[0.4em] text-gray-600 group-hover/stat:text-luxury-gold transition-colors">Surface</span>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-lg font-black text-white font-mono tracking-tighter">
+                          {prop.lebar * prop.panjang}
+                        </span>
+                        <span className="text-[10px] text-gray-500 font-black tracking-widest uppercase">M²</span>
                       </div>
                     </div>
-
-                    {/* Architectural Specs Grid */}
-                    <div className="grid grid-cols-2 gap-y-8 gap-x-6 pt-6 border-t border-white/5">
-                      <div className="space-y-1.5">
-                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Land Area</span>
-                        <span className="text-sm font-black text-white font-mono">
-                          {prop.lebar * prop.panjang} <span className="text-[10px] text-gray-500 font-sans tracking-normal font-medium">M²</span>
-                        </span>
-                      </div>
-                      <div className="space-y-1.5">
-                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Orientation</span>
-                        <span className="text-sm font-black text-white flex items-center space-x-2">
-                          <Compass className="w-3.5 h-3.5 text-luxury-gold" />
-                          <span>{Array.isArray(prop.hadap) ? prop.hadap[0] : prop.hadap}</span>
-                        </span>
-                      </div>
-                      <div className="space-y-1.5">
-                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Elevation</span>
-                        <span className="text-sm font-black text-white">
-                          {prop.tingkat} <span className="text-[10px] text-gray-500 font-sans tracking-normal font-medium">LEVELS</span>
-                        </span>
-                      </div>
-                      <div className="space-y-1.5">
-                        <span className="block text-[8px] uppercase font-black tracking-[0.3em] text-gray-600">Provision</span>
-                        <span className="text-sm font-black text-white flex items-center space-x-2">
-                          <Car className="w-3.5 h-3.5 text-luxury-gold" />
-                          <span>{prop.carport ? "PRIVATE" : "NONE"}</span>
+                    <div className="space-y-2 group/stat">
+                      <span className="block text-[9px] uppercase font-black tracking-[0.4em] text-gray-600 group-hover/stat:text-luxury-gold transition-colors">Facing</span>
+                      <div className="flex items-center gap-2">
+                        <Compass className="w-4 h-4 text-luxury-gold opacity-60" />
+                        <span className="text-xs font-black text-white uppercase tracking-widest">
+                          {Array.isArray(prop.hadap) ? prop.hadap[0] : prop.hadap}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Pricing and Action Footer */}
-                  <div className="mt-10 pt-8 border-t border-white/5 flex items-end justify-between">
+                  {/* Pricing and Action - The Final Reveal */}
+                  <div className="mt-12 pt-8 border-t border-white/5 flex items-center justify-between relative z-10">
                     <div className="flex flex-col">
-                      <span className="text-[8px] font-black text-gray-600 uppercase tracking-[0.4em] mb-1">OFFICIAL PRICE</span>
-                      <span className="text-xl font-black text-white font-mono tracking-tighter group-hover:text-luxury-gold transition-colors duration-500">
+                      <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.5em] mb-1.5">INVESTMENT VALUE</span>
+                      <span className="text-2xl font-black text-white font-mono tracking-tighter group-hover:text-luxury-gold transition-colors duration-700">
                         {formatRupiah(prop.price)}
                       </span>
                     </div>
                     <motion.button
-                      whileHover={{ scale: 1.05, backgroundColor: "#C9A961", color: "#050505" }}
+                      whileHover={{ scale: 1.05, backgroundColor: "#FFFFFF", color: "#050505" }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => {
                         setSelectedDetailProperty(prop);
                         setIsDetailModalOpen(true);
                       }}
-                      className="px-6 py-3.5 bg-white/5 text-white font-black text-[10px] tracking-[0.3em] uppercase rounded-2xl border border-white/10 transition-all cursor-pointer shadow-2xl backdrop-blur-md"
+                      className="px-8 py-4 bg-luxury-gold text-luxury-black font-black text-[10px] tracking-[0.3em] uppercase rounded-full shadow-[0_20px_40px_-10px_rgba(201,169,97,0.3)] transition-all cursor-pointer border border-luxury-gold/50 hover:shadow-luxury-gold/50"
                     >
-                      EXPLORE
+                      DISCOVER
                     </motion.button>
                   </div>
                 </div>
