@@ -217,8 +217,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           </motion.div>
           
           <motion.h1 variants={heroItemVariants} className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.9] heading-luxury">
-            Apresiasi Mahakarya <br />
-            Arsitektur <br />
+            Apresiasi Mahakarya Arsitektur <br />
             <span className="metallic-gold">
               Modern & Luxury Elite
             </span>
