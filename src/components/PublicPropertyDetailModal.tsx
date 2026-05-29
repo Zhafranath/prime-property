@@ -9,7 +9,9 @@ import {
   Building2, ArrowRightLeft, FileCheck2, Info, MapPin, 
   Car, Layers, Ruler
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "motion/react";
 import { Property } from "../types";
 import { formatRupiah } from "./FeaturedProperties";
 import ImageWithFallback from "./ImageWithFallback";
@@ -104,6 +106,16 @@ export function getPropertyImages(property: Property) {
 
 export default function PublicPropertyDetailModal({ isOpen, onClose, property }: PublicPropertyDetailModalProps) {
   const [activeTab, setActiveTab] = useState<"exterior" | "interior" | "blueprint">("exterior");
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab("exterior");
+      if (backdropRef.current) backdropRef.current.scrollTop = 0;
+      if (contentRef.current) contentRef.current.scrollTop = 0;
+    }
+  }, [isOpen, property]);
 
   if (!isOpen || !property) return null;
 
@@ -202,13 +214,13 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto">
+  return createPortal(
+    <div ref={backdropRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto">
       <div className="relative w-full max-w-5xl bg-luxury-black rounded-2xl border border-luxury-gold/30 gold-glow-strong overflow-hidden my-6 max-h-[92vh] flex flex-col animate-scale-up" id="public-property-modal">
         {/* Header bar */}
-        <div className="flex items-center justify-between p-5 border-b border-luxury-gold/15 bg-gradient-to-r from-neutral-900 via-luxury-deep to-luxury-black relative z-10">
+        <div className="flex items-center justify-between p-5 border-b border-luxury-gold/15 bg-gradient-to-r from-neutral-900 via-luxury-deep to-luxury-black relative z-10 select-none">
           <div>
-            <span className="text-[10px] font-mono tracking-widest text-luxury-gold uppercase block mb-0.5">SPESIFIKASI UNIT & CONTOH DESAIN</span>
+            <span className="text-[10px] font-mono tracking-widest text-luxury-gold uppercase block mb-0.5">SPESIFIKASI UNIT &amp; CONTOH DESAIN</span>
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-white tracking-tight">{property.nama_property || property.nama}</h3>
               <span className={`px-2 py-0.5 text-[8px] font-bold font-mono tracking-wider rounded ${
@@ -228,7 +240,7 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
         </div>
 
         {/* Content frame */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-10 bg-[#0f0f10]">
+        <div ref={contentRef} className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-10 bg-[#0f0f10]">
           
           {/* Main design panels and images container */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -240,7 +252,7 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
                   <Sparkles className="w-4 h-4 text-luxury-gold animate-pulse" />
                   <span>CONTOH ARSITEKTUR & PILIHAN DESAIN</span>
                 </h4>
-                <span className="text-[10px] bg-luxury-gold/5 border border-luxury-gold/20 text-luxury-gold px-2 py-0.5 rounded font-bold">
+                <span className="text-[10px] bg-luxury-gold/5 border border-luxury-gold/20 text-luxury-gold px-2 py-0.5 rounded font-bold font-mono">
                   Brosur Model Terakreditasi
                 </span>
               </div>
@@ -379,90 +391,24 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
                   {/* Golden Net Frame */}
                   <div className="mt-6 p-4 bg-luxury-gold/5 border border-luxury-gold/30 rounded-xl flex items-center justify-between">
                     <div>
-                      <span className="block text-[8px] uppercase font-mono tracking-widest text-[#C9A961] font-bold">Premium Price (Nett)</span>
-                      <span className="text-[10px] text-gray-400 font-light block">Harga final bebas biaya admin</span>
+                      <span className="block text-[8px] uppercase font-mono tracking-widest text-[#C9A961] font-bold">PROYEKSI HARGA NETT</span>
+                      <span className="text-[10px] text-gray-400 font-light block">Bebas Pajak Pemeliharaan &amp; Administrasi Awal</span>
                     </div>
-                    <span className="text-xl sm:text-2xl font-black text-luxury-gold tracking-tight">
+                    <span className="text-xl sm:text-2xl font-black text-luxury-gold tracking-tight font-mono">
                       {formatRupiah(property.price)}
                     </span>
                   </div>
+
                 </div>
               </div>
 
-              {/* Contact Broker Call to Action panel */}
-              <div className="glass-panel p-4.5 rounded-xl border border-luxury-gold/10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#141415]">
-                <div className="space-y-1 sm:text-left text-center">
-                  <span className="text-xs font-bold text-white block">Tertarik Melakukan Survey Unit?</span>
-                  <p className="text-[10px] text-gray-400 leading-normal">
-                    Hubungi broker bersertifikat resmi kami untuk mendapatkan privasi survey langsung di lokasi properti.
-                  </p>
-                </div>
-                <button
-                  onClick={handleContactAnchor}
-                  className="bg-luxury-gold hover:bg-luxury-gold-hover text-luxury-black font-extrabold uppercase text-[10px] tracking-widest px-4 py-2.5 rounded-lg transition-colors cursor-pointer flex-shrink-0"
-                >
-                  Ajukan Pertanyaan ↗
-                </button>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Core Facilities Grid Section (Bento Style) */}
-          <div className="space-y-4 pt-4 border-t border-luxury-gold/10">
-            <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest flex items-center gap-1.5">
-              <span>FASILITAS PREMIUM YANG DISEDIAKAN</span>
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {facilities.map((fac, i) => {
-                const Icon = fac.icon;
-                return (
-                  <div key={i} className="flex gap-3 p-4 bg-luxury-deep border border-luxury-gold/5 rounded-xl hover:border-luxury-gold/20 transition-all duration-200">
-                    <div className="w-9 h-9 rounded-lg bg-luxury-gold/10 border border-luxury-gold/20 flex items-center justify-center text-luxury-gold flex-shrink-0">
-                      <Icon className="w-4.5 h-4.5" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <h5 className="text-[11px] font-bold text-white tracking-wide">{fac.title}</h5>
-                      <p className="text-[10px] text-gray-400 leading-tight font-light">{fac.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Advantages / USPs List Section (Informative Toll access etc) */}
-          <div className="space-y-4 pt-4 border-t border-luxury-gold/10">
-            <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest flex items-center gap-1.5">
-              <span>KEUNTUNGAN NILAI INVESTASI ATAU AKSESIBILITAS LOKASI</span>
-            </h4>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {advantages.map((adv, i) => {
-                const Icon = adv.icon;
-                return (
-                  <div key={i} className="flex items-start gap-4 p-4 rounded-xl border border-luxury-gold/5 bg-gradient-to-br from-neutral-900 to-[#121213]">
-                    <div className="w-10 h-10 rounded-full bg-luxury-gold/5 border border-luxury-gold/15 flex items-center justify-center text-luxury-gold flex-shrink-0 mt-0.5">
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="space-y-1">
-                      <h5 className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="text-[#C9A961]">✦</span> {adv.title}
-                      </h5>
-                      <p className="text-[11px] text-gray-400 leading-normal font-light">
-                        {adv.desc}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
 
         </div>
 
         {/* Modal footer view */}
-        <div className="flex items-center justify-between p-4.5 border-t border-luxury-gold/15 bg-gradient-to-r from-neutral-900 to-luxury-black relative z-10">
+        <div className="flex items-center justify-between p-4.5 border-t border-luxury-gold/15 bg-gradient-to-r from-neutral-900 to-luxury-black relative z-10 select-none">
           <div className="hidden sm:flex items-center gap-1 text-[10px] text-gray-500 font-mono">
             <Info className="w-3.5 h-3.5 text-gray-600" />
             <span>Pemberdayaan resmi PT Graha Prima Propertindo</span>
@@ -484,6 +430,7 @@ export default function PublicPropertyDetailModal({ isOpen, onClose, property }:
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

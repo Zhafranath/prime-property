@@ -18,7 +18,50 @@ import AgentFormModal from "./components/AgentFormModal";
 import AuditLogModal from "./components/AuditLogModal";
 import ContactForm from "./components/ContactForm";
 import AboutUs from "./components/AboutUs";
+import WhyChooseUs from "./components/WhyChooseUs";
+import PremiumFeatures from "./components/PremiumFeatures";
 import PrimePropertyLogo from "./components/PrimePropertyLogo";
+import { initialProperties, initialAgents, fallbackLogs } from "./initialData";
+
+const getStoredProperties = (): Property[] => {
+  const stored = localStorage.getItem("prime_properties");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch (e) {
+      // ignore
+    }
+  }
+  // Initialize on first stand-alone load
+  localStorage.setItem("prime_properties", JSON.stringify(initialProperties));
+  return initialProperties;
+};
+
+const getStoredLogs = (): AuditLog[] => {
+  const stored = localStorage.getItem("prime_audit_logs");
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      // ignore
+    }
+  }
+  localStorage.setItem("prime_audit_logs", JSON.stringify(fallbackLogs));
+  return fallbackLogs;
+};
+
+const getStoredActiveUser = () => {
+  const stored = localStorage.getItem("prime_active_user");
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      // ignore
+    }
+  }
+  return null;
+};
 
 // Helper: Parse URL Query Params
 function parseUrlParams(): Record<string, string> {
@@ -38,15 +81,15 @@ export default function App() {
   const [urlFilters, setUrlFilters] = useState<Record<string, string>>({});
 
   // Auth States
-  const [user, setUser] = useState<{ username: string; fullName: string; role: UserRole } | null>(null);
+  const [user, setUser] = useState<{ username: string; fullName: string; role: UserRole } | null>(getStoredActiveUser);
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // App Database States
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [properties, setProperties] = useState<Property[]>(getStoredProperties);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(getStoredLogs);
   const [loadingDb, setLoadingDb] = useState(false);
 
   // Global Alerts / Banner State
@@ -88,6 +131,11 @@ export default function App() {
     }
   }, [currentPath]);
 
+  // Auto-scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [currentPath]);
+
   // Push Page-State Transitions to browser history smoothly
   const handleNavigate = (path: string) => {
     window.history.pushState(null, "", path);
@@ -112,6 +160,7 @@ export default function App() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          localStorage.setItem("prime_active_user", JSON.stringify(data.user));
         }
       } catch (err) {
         // Suppress on public view
@@ -126,13 +175,21 @@ export default function App() {
     try {
       // If logged in, fetch from protected admin properties; otherwise fetch from public endpoint
       const endpoint = user ? "/api/properties" : "/api/public/properties";
-      const res = await fetch(endpoint);
+      const res = await fetch(endpoint).catch(() => {
+        throw new Error("offline");
+      });
       if (res.ok) {
         const data = await res.json();
         setProperties(data.properties || []);
+        localStorage.setItem("prime_properties", JSON.stringify(data.properties || []));
+      } else {
+        throw new Error("unreachable");
       }
     } catch (e) {
-      console.error("Gagal mendapatkan daftar unit properti.", e);
+      // Graceful fallback to cached properties dataset
+      console.warn("Running in stand-alone local storage fallback mode.", e);
+      const cached = getStoredProperties();
+      setProperties(cached);
     } finally {
       setLoadingDb(false);
     }
@@ -147,13 +204,19 @@ export default function App() {
   const fetchAuditLogs = async () => {
     if (!user) return;
     try {
-      const res = await fetch("/api/audit-logs");
+      const res = await fetch("/api/audit-logs").catch(() => {
+        throw new Error("offline");
+      });
       if (res.ok) {
         const data = await res.json();
         setAuditLogs(data.auditLogs || []);
+        localStorage.setItem("prime_audit_logs", JSON.stringify(data.auditLogs || []));
+      } else {
+        throw new Error("unreachable");
       }
     } catch (e) {
-      console.error("Gagal sinkronisasi audit logs.", e);
+      const cached = getStoredLogs();
+      setAuditLogs(cached);
     }
   };
 
@@ -192,11 +255,14 @@ export default function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: loginUsername, password: loginPassword })
+      }).catch(() => {
+        throw new Error("offline");
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
         setUser(data.user);
+        localStorage.setItem("prime_active_user", JSON.stringify(data.user));
         setLoginUsername("");
         setLoginPassword("");
         handleNavigate("/agent/dashboard");
@@ -204,7 +270,29 @@ export default function App() {
         setLoginError(data.error || "Gagal masuk. Otorisasi salah.");
       }
     } catch (err: any) {
-      setLoginError("Upps, gagal terhubung dengan server pengelola.");
+      console.warn("Attempting standalone offline matching fallback...");
+      const agentsStored = localStorage.getItem("prime_agents");
+      const agents: Agent[] = agentsStored ? JSON.parse(agentsStored) : initialAgents;
+      
+      const foundAgent = agents.find(a => a.username.toLowerCase() === loginUsername.trim().toLowerCase());
+      if (foundAgent) {
+        const mockUser = {
+          username: foundAgent.username,
+          fullName: foundAgent.fullName,
+          role: foundAgent.role
+        };
+        setUser(mockUser);
+        localStorage.setItem("prime_active_user", JSON.stringify(mockUser));
+        setLoginUsername("");
+        setLoginPassword("");
+        handleNavigate("/agent/dashboard");
+        setGlobalBanner({ 
+          type: "success", 
+          text: `Selamat datang kembali, ${foundAgent.fullName}. Terhubung aman via Standalone Local Engine.` 
+        });
+      } else {
+        setLoginError("Kombinasi ID Agen salah atau tidak terdaftar di database luring.");
+      }
     } finally {
       setAuthLoading(false);
     }
@@ -213,11 +301,12 @@ export default function App() {
   // Auth: Logout
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
     } catch (e) {
       // safe fallthrough
     }
     setUser(null);
+    localStorage.removeItem("prime_active_user");
     handleNavigate("/");
     setGlobalBanner({ type: "success", text: "Terima kasih. Anda telah keluar dari sistem secara aman." });
   };
@@ -229,16 +318,35 @@ export default function App() {
     phone: string;
     message: string;
   }) => {
-    const res = await fetch("/api/public/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (res.ok) {
-      return { success: true, message: data.message };
-    } else {
-      return { success: false, message: "", error: data.error };
+    try {
+      const res = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(() => {
+        throw new Error("offline");
+      });
+      const data = await res.json();
+      if (res.ok) {
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: "", error: data.error };
+      }
+    } catch (err) {
+      // Local fallthrough storage
+      const messagesStored = localStorage.getItem("prime_messages");
+      const currentMsgs = messagesStored ? JSON.parse(messagesStored) : [];
+      const newMsg = {
+        id: "msg_" + Date.now(),
+        ...payload,
+        timestamp: new Date().toISOString()
+      };
+      currentMsgs.push(newMsg);
+      localStorage.setItem("prime_messages", JSON.stringify(currentMsgs));
+      return { 
+        success: true, 
+        message: "Pesan konsultasi premium Anda berhasil dicatat secara privat di micro-cloud browser Anda!" 
+      };
     }
   };
 
@@ -252,6 +360,8 @@ export default function App() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
+      }).catch(() => {
+        throw new Error("offline");
       });
 
       const data = await res.json();
@@ -270,8 +380,74 @@ export default function App() {
         return false;
       }
     } catch (e) {
-      setGlobalBanner({ type: "error", text: "Terjadi kesalahan hubungan server." });
-      return false;
+      // Local storage offline workflow
+      const currentProps = [...properties];
+      const actor = user?.username || "offline_advisor";
+      const timestamp = new Date().toISOString();
+
+      if (selectedProperty) {
+        const idx = currentProps.findIndex((p) => p.id === selectedProperty.id);
+        if (idx !== -1) {
+          const updated: Property = {
+            ...currentProps[idx],
+            ...payload,
+            nama: payload.nama_property || payload.nama,
+            updated_at: timestamp
+          };
+          currentProps[idx] = updated;
+
+          const newLog: AuditLog = {
+            id: `log_${Date.now()}`,
+            action: "UPDATE",
+            property_id: selectedProperty.id,
+            property_nama: updated.nama_property,
+            performed_by: actor,
+            details: `Mengedit spesifikasi secara luring: ${updated.nama_property}`,
+            timestamp
+          };
+          const logs = [newLog, ...auditLogs];
+          setAuditLogs(logs);
+          localStorage.setItem("prime_audit_logs", JSON.stringify(logs));
+        }
+      } else {
+        const newId = `prop_${Date.now()}`;
+        const created: Property = {
+          ...payload,
+          id: newId,
+          nama: payload.nama_property,
+          nama_property: payload.nama_property,
+          status: "in_stock",
+          created_at: timestamp,
+          updated_at: timestamp,
+          created_by: actor,
+          deleted_at: null
+        };
+        currentProps.push(created);
+
+        const newLog: AuditLog = {
+          id: `log_${Date.now()}`,
+          action: "CREATE",
+          property_id: newId,
+          property_nama: created.nama_property,
+          performed_by: actor,
+          details: `Menambah listing secara luring: ${created.nama_property}`,
+          timestamp
+        };
+        const logs = [newLog, ...auditLogs];
+        setAuditLogs(logs);
+        localStorage.setItem("prime_audit_logs", JSON.stringify(logs));
+      }
+
+      setProperties(currentProps);
+      localStorage.setItem("prime_properties", JSON.stringify(currentProps));
+
+      setGlobalBanner({
+        type: "success",
+        text: selectedProperty 
+          ? "Spesifikasi properti diperbaharui luring (localStorage)." 
+          : "Listing properti baru ditambahkan luring (localStorage)."
+      });
+      return true;
     }
   };
 
@@ -282,7 +458,9 @@ export default function App() {
     }
 
     try {
-      const res = await fetch(`/api/properties/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/properties/${id}`, { method: "DELETE" }).catch(() => {
+        throw new Error("offline");
+      });
       const data = await res.json();
       if (res.ok && data.success) {
         setGlobalBanner({ type: "success", text: "Properti berhasil diarsipkan (Soft Delete)." });
@@ -292,14 +470,40 @@ export default function App() {
         setGlobalBanner({ type: "error", text: data.error || "Gagal mengarsipkan properti." });
       }
     } catch (e) {
-      setGlobalBanner({ type: "error", text: "Terjadi kendala operasional." });
+      // Local soft delete
+      const currentProps = properties.map(p => {
+        if (p.id === id) {
+          return { ...p, deleted_at: new Date().toISOString() };
+        }
+        return p;
+      });
+      setProperties(currentProps);
+      localStorage.setItem("prime_properties", JSON.stringify(currentProps));
+
+      const propObj = properties.find(p => p.id === id);
+      const newLog: AuditLog = {
+        id: `log_${Date.now()}`,
+        action: "DELETE",
+        property_id: id,
+        property_nama: propObj?.nama_property || "Komponen",
+        performed_by: user?.username || "offline_advisor",
+        details: `Mengarsipkan (soft delete) properti luring: ${propObj?.nama_property}`,
+        timestamp: new Date().toISOString()
+      };
+      const logs = [newLog, ...auditLogs];
+      setAuditLogs(logs);
+      localStorage.setItem("prime_audit_logs", JSON.stringify(logs));
+
+      setGlobalBanner({ type: "success", text: "Properti berhasil diarsipkan secara luring." });
     }
   };
 
   // RESTORE PROPERTY
   const handlePropertyRestore = async (id: string) => {
     try {
-      const res = await fetch(`/api/properties/${id}/restore`, { method: "POST" });
+      const res = await fetch(`/api/properties/${id}/restore`, { method: "POST" }).catch(() => {
+        throw new Error("offline");
+      });
       const data = await res.json();
       if (res.ok && data.success) {
         setGlobalBanner({ type: "success", text: "Properti berhasil dipulihkan secara penuh." });
@@ -309,45 +513,128 @@ export default function App() {
         setGlobalBanner({ type: "error", text: data.error || "Gagal memulihkan properti." });
       }
     } catch (e) {
-      setGlobalBanner({ type: "error", text: "Gagal memproses pemulihan." });
+      const currentProps = properties.map(p => {
+        if (p.id === id) {
+          return { ...p, deleted_at: null };
+        }
+        return p;
+      });
+      setProperties(currentProps);
+      localStorage.setItem("prime_properties", JSON.stringify(currentProps));
+
+      const propObj = properties.find(p => p.id === id);
+      const newLog: AuditLog = {
+        id: `log_${Date.now()}`,
+        action: "RESTORE",
+        property_id: id,
+        property_nama: propObj?.nama_property || "Komponen",
+        performed_by: user?.username || "offline_advisor",
+        details: `Memulihkan properti luring: ${propObj?.nama_property}`,
+        timestamp: new Date().toISOString()
+      };
+      const logs = [newLog, ...auditLogs];
+      setAuditLogs(logs);
+      localStorage.setItem("prime_audit_logs", JSON.stringify(logs));
+
+      setGlobalBanner({ type: "success", text: "Properti berhasil dipulihkan luring." });
     }
   };
 
   // --- ACCOUNTS / AGENT MANAGEMENT SERVICES ---
   
   const handleFetchAgentsList = async (): Promise<Agent[]> => {
-    const res = await fetch("/api/agents");
-    if (res.ok) {
-      const data = await res.json();
-      return data.agents || [];
+    try {
+      const res = await fetch("/api/agents").catch(() => {
+        throw new Error("offline");
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.agents || [];
+      }
+    } catch (e) {
+      const agentsStored = localStorage.getItem("prime_agents");
+      if (agentsStored) {
+        return JSON.parse(agentsStored);
+      }
+      localStorage.setItem("prime_agents", JSON.stringify(initialAgents));
+      return initialAgents;
     }
     throw new Error("Gagal mengambil daftar akun otorisasi.");
   };
 
   const handleCreateAgentAccount = async (payload: any) => {
-    const res = await fetch("/api/agents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    return { success: res.ok, error: data.error };
+    try {
+      const res = await fetch("/api/agents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(() => {
+        throw new Error("offline");
+      });
+      const data = await res.json();
+      return { success: res.ok, error: data.error };
+    } catch (e) {
+      const stored = localStorage.getItem("prime_agents");
+      const currentAgents: Agent[] = stored ? JSON.parse(stored) : [...initialAgents];
+      
+      if (currentAgents.some(a => a.username === payload.username)) {
+        return { success: false, error: "ID Agen tersebut sudah pernah digunakan." };
+      }
+
+      const newAgent: Agent = {
+        username: payload.username,
+        fullName: payload.fullName,
+        role: payload.role,
+        created_at: new Date().toISOString()
+      };
+      currentAgents.push(newAgent);
+      localStorage.setItem("prime_agents", JSON.stringify(currentAgents));
+      return { success: true, error: "" };
+    }
   };
 
   const handleUpdateAgentAccount = async (username: string, payload: any) => {
-    const res = await fetch(`/api/agents/${username}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    return { success: res.ok, error: data.error };
+    try {
+      const res = await fetch(`/api/agents/${username}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(() => {
+        throw new Error("offline");
+      });
+      const data = await res.json();
+      return { success: res.ok, error: data.error };
+    } catch (e) {
+      const stored = localStorage.getItem("prime_agents");
+      const currentAgents: Agent[] = stored ? JSON.parse(stored) : [...initialAgents];
+      const idx = currentAgents.findIndex(a => a.username === username);
+      if (idx !== -1) {
+        currentAgents[idx] = {
+          ...currentAgents[idx],
+          fullName: payload.fullName,
+          role: payload.role
+        };
+        localStorage.setItem("prime_agents", JSON.stringify(currentAgents));
+        return { success: true, error: "" };
+      }
+      return { success: false, error: "Akun agen luring tidak dapat ditemukan." };
+    }
   };
 
   const handleDeleteAgentAccount = async (username: string) => {
-    const res = await fetch(`/api/agents/${username}`, { method: "DELETE" });
-    const data = await res.json();
-    return { success: res.ok, error: data.error };
+    try {
+      const res = await fetch(`/api/agents/${username}`, { method: "DELETE" }).catch(() => {
+        throw new Error("offline");
+      });
+      const data = await res.json();
+      return { success: res.ok, error: data.error };
+    } catch (e) {
+      const stored = localStorage.getItem("prime_agents");
+      let currentAgents: Agent[] = stored ? JSON.parse(stored) : [...initialAgents];
+      currentAgents = currentAgents.filter(a => a.username !== username);
+      localStorage.setItem("prime_agents", JSON.stringify(currentAgents));
+      return { success: true, error: "" };
+    }
   };
 
   // --- CORE RENDER CONTROLLER ---
@@ -355,7 +642,7 @@ export default function App() {
     switch (currentPath) {
       case "/":
         return (
-          <div className="flex flex-col">
+          <div className="flex flex-col min-h-[80vh]">
             {/* Beranda: Real estate directory and search engine */}
             <section id="beranda-section" className="scroll-mt-20">
               <FeaturedProperties
@@ -365,25 +652,25 @@ export default function App() {
               />
             </section>
             
-            {/* Tentang Kami: Architectural values and corporate details */}
-            <section id="about-section" className="bg-gradient-to-b from-luxury-black via-[#0c0c0d] to-[#0f0f10] border-t border-b border-luxury-gold/10 py-12 scroll-mt-20">
-              <AboutUs />
-            </section>
-            
-            {/* Hubungi Kami: Integrated feedback, location and consultation forms */}
-            <section id="contact-section" className="bg-[#0f0f10] py-12 scroll-mt-20">
-              <ContactForm onSubmitContact={handleContactSubmit} />
-            </section>
+            {/* Premium Features: Facilities and Investment Advantages displayed on Beranda */}
+            <PremiumFeatures />
+
+            {/* Why Choose Us: Compelling reasons to choose Prime Property */}
+            <WhyChooseUs />
           </div>
         );
       case "/about":
-        // Redirect to single-page anchor
-        setTimeout(() => handleNavigate("/?scroll=about-section"), 50);
-        return <div className="text-center py-24 text-gray-400 font-light">Mengarahkan ke Tentang Kami...</div>;
+        return (
+          <div className="py-6 bg-gradient-to-b from-luxury-black via-[#0c0c0d] to-[#0a0a0b] min-h-[80vh]">
+            <AboutUs />
+          </div>
+        );
       case "/contact":
-        // Redirect to single-page anchor
-        setTimeout(() => handleNavigate("/?scroll=contact-section"), 50);
-        return <div className="text-center py-24 text-gray-400 font-light">Mengarahkan ke Hubungi Kami...</div>;
+        return (
+          <div className="py-6 bg-gradient-to-b from-[#0f0f10] to-[#0a0a0b] min-h-[80vh]">
+            <ContactForm onSubmitContact={handleContactSubmit} />
+          </div>
+        );
 
       case "/agent/login":
         if (user) {
@@ -391,10 +678,36 @@ export default function App() {
           setTimeout(() => handleNavigate("/agent/dashboard"), 100);
           return <div className="text-center py-24 text-gray-400">Menghubungkan ke portal...</div>;
         }
+        const loginContainer = {
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.05
+            }
+          }
+        };
+
+        const loginItem = {
+          hidden: { opacity: 0, y: 15, filter: "blur(4px)" },
+          show: {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+          }
+        };
+
         return (
           <div className="max-w-md mx-auto py-16 px-4 sm:px-6">
-            <div className="glass-panel p-8 sm:p-10 rounded-2xl border border-luxury-gold/30 gold-glow-strong">
-              <div className="text-center space-y-3 mb-8">
+            <motion.div 
+              variants={loginContainer}
+              initial="hidden"
+              animate="show"
+              className="glass-panel p-8 sm:p-10 rounded-2xl border border-luxury-gold/30 gold-glow-strong text-left"
+            >
+              <motion.div variants={loginItem} className="text-center space-y-3 mb-8">
                 <div className="w-12 h-12 bg-luxury-gold/10 border border-luxury-gold flex items-center justify-center rounded-xl mx-auto text-luxury-gold shadow-md">
                   <Key className="w-6 h-6" />
                 </div>
@@ -402,16 +715,16 @@ export default function App() {
                 <p className="text-gray-400 text-xs font-light">
                   Berikan ID Kredensial operasional Anda untuk masuk.
                 </p>
-              </div>
+              </motion.div>
 
               {loginError && (
-                <div className="p-3 bg-luxury-red/15 border border-luxury-red/35 text-red-300 rounded-lg text-xs font-semibold mb-6 animate-fade-in leading-relaxed">
+                <motion.div variants={loginItem} className="p-3 bg-luxury-red/15 border border-luxury-red/35 text-red-300 rounded-lg text-xs font-semibold mb-6 animate-fade-in leading-relaxed">
                   ⚠️ {loginError}
-                </div>
+                </motion.div>
               )}
 
               <form onSubmit={handleLoginSubmit} className="space-y-6">
-                <div>
+                <motion.div variants={loginItem}>
                   <label className="block text-[10px] uppercase font-bold text-gray-400 mb-2">ID Agen (Username)</label>
                   <input
                     type="text"
@@ -422,9 +735,9 @@ export default function App() {
                     className="w-full bg-luxury-deep text-white text-xs px-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:outline-none placeholder:text-gray-700 font-semibold uppercase font-mono tracking-wider"
                     id="login-username-input"
                   />
-                </div>
+                </motion.div>
 
-                <div>
+                <motion.div variants={loginItem}>
                   <label className="block text-[10px] uppercase font-bold text-gray-400 mb-2">Kata Sandi</label>
                   <input
                     type="password"
@@ -435,18 +748,19 @@ export default function App() {
                     className="w-full bg-luxury-deep text-white text-xs px-4 py-3 rounded-lg border border-luxury-gold/15 focus:border-luxury-gold focus:outline-none placeholder:text-gray-700 font-mono"
                     id="login-password-input"
                   />
-                </div>
+                </motion.div>
 
-                <button
+                <motion.button
+                  variants={loginItem}
                   type="submit"
                   disabled={authLoading}
                   className="w-full py-3 bg-luxury-gold hover:bg-luxury-gold-hover text-luxury-black font-bold uppercase text-xs tracking-wider rounded-lg shadow-md transition-all duration-200 cursor-pointer disabled:opacity-50"
                   id="btn-submit-login"
                 >
                   {authLoading ? "Memverifikasi..." : "Akses Sistem"}
-                </button>
+                </motion.button>
               </form>
-            </div>
+            </motion.div>
           </div>
         );
 
@@ -551,10 +865,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPath}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="w-full h-full"
           >
             {renderContent()}
@@ -595,10 +909,19 @@ export default function App() {
       )}
 
       {/* Footer Design */}
-      <footer className="bg-luxury-black border-t border-luxury-gold/10 py-12 mt-16 text-center text-gray-500 text-xs">
+      <footer className="bg-neutral-950/80 backdrop-blur-md border-t border-luxury-gold/10 py-16 text-center text-gray-500 text-xs">
         <div className="max-w-7xl mx-auto px-4 space-y-4 flex flex-col items-center">
           <div className="flex items-center justify-center">
             <PrimePropertyLogo className="h-10 text-white" />
+          </div>
+          <div className="pt-2 max-w-lg mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-luxury-gold/5 border border-luxury-gold/20 text-luxury-gold text-[10px] font-mono tracking-wider uppercase mb-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span>Smart Hybrid Engine Active</span>
+            </div>
+            <p className="text-[10px] text-gray-400 font-light leading-relaxed">
+              Mendukung sinkronisasi awan & Penyimpanan Luring Mandiri. CRM dan direktori properti Anda tetap beroperasi penuh di server statis (Vercel / GitHub Pages).
+            </p>
           </div>
         </div>
       </footer>

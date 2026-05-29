@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Search, Compass, Grid, Layers, MapPin, Car, DollarSign, RefreshCw, Layers3, CheckCircle, Clock, SlidersHorizontal, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Compass, Grid, Layers, MapPin, Car, DollarSign, RefreshCw, Layers3, SlidersHorizontal, ChevronDown, ChevronUp, CheckCircle, Clock } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { motion } from "motion/react";
 import { Property, PropertyType, PropertyStatus, CompassDirection } from "../types";
 import PublicPropertyDetailModal, { getPropertyImages } from "./PublicPropertyDetailModal";
 import ImageWithFallback from "./ImageWithFallback";
@@ -158,8 +159,34 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
     return true;
   });
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.12,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 25, filter: "blur(6px)" },
+    show: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
+
   return (
-    <div className="w-full">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="w-full"
+    >
       {/* Hero Banner Section with Smooth Transitioning Property Background Slideshow */}
       <div className="relative py-24 sm:py-28 px-4 sm:px-6 lg:px-8 border-b border-luxury-gold/10 overflow-hidden flex items-center justify-center min-h-[460px]">
         {/* Slideshow backgrounds */}
@@ -179,7 +206,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
         </div>
 
         {/* Hero Content (above slideshow) */}
-        <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10 animate-fade-in">
+        <motion.div variants={itemVariants} className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
           <div className="inline-flex items-center space-x-2 bg-luxury-gold/15 border border-luxury-gold/35 px-4 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest text-luxury-gold uppercase gold-glow backdrop-blur-sm">
             <span>♛ PORTOFOLIO INVESTASI & AKUISISI ULTRA-LUKSU</span>
           </div>
@@ -192,17 +219,23 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           <p className="text-sm sm:text-base md:text-lg text-gray-200 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-md">
             Gerbang eksklusif kepemilikan Ruang Bisnis Komersial (Ruko) paling strategis serta Villa prestisius bersertifikasi hukum mutlak di kawasan episentrum pertumbuhan finansial Indonesia.
           </p>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <motion.div 
+        variants={containerVariants} 
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.03 }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      >
         {/* Real-time Filter Panel */}
-        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-luxury-gold/20 shadow-xl gold-glow mb-12 animate-fade-in">
+        <motion.div variants={itemVariants} className="glass-panel p-6 sm:p-8 rounded-2xl border border-luxury-gold/20 shadow-xl gold-glow mb-12 bg-luxury-black/90">
           {/* Flex header row */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-luxury-gold/15 mb-6">
             <div>
-              <h2 className="text-lg font-bold text-white tracking-wide">Instrumen Filtrasi Aset Terintegrasi</h2>
-              <p className="text-xs text-gray-400 mt-1">Konfigurasikan parameter filter di bawah untuk melakukan kurasi portofolio investasi Anda secara presisi</p>
+              <h2 className="text-lg font-bold text-white tracking-wide">Instrumen Pencarian Aset Terintegrasi</h2>
+              <p className="text-xs text-gray-450 mt-1">Saring secara presisi berdasarkan preferensi spesifikasi bangunan, tata letak, dan rentang alokasi dana.</p>
             </div>
             
             {/* Control Cluster */}
@@ -399,23 +432,38 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
               </div>
             </div>
           )}
-        </div>
-
-        {/* Listings Counter */}
-        <div className="flex justify-between items-center mb-6 px-2 animate-fade-in">
-          <div>
-            <span className="text-sm text-gray-400">
-              Menampilkan <span className="text-luxury-gold font-bold">{filteredProperties.length}</span> dari <span className="text-white font-semibold">{properties.filter(p => p.deleted_at === null).length}</span> pilihan properti aktif.
-            </span>
-          </div>
-        </div>
+        </motion.div>
 
         {/* Properties Grid */}
         {filteredProperties.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProperties.map((prop, index) => (
-              <div
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.12,
+                }
+              }
+            }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.03 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {filteredProperties.map((prop) => (
+              <motion.div
                 key={prop.id}
+                variants={{
+                  hidden: { opacity: 0, y: 45, scale: 0.96, filter: "blur(8px)" },
+                  show: { 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    filter: "blur(0px)",
+                    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] }
+                  }
+                }}
                 className="glass-panel rounded-xl overflow-hidden border border-luxury-gold/10 hover:border-luxury-gold/45 group transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col h-[525px] shadow-lg hover:shadow-luxury-gold/5"
                 id={`property-card-${prop.id}`}
               >
@@ -563,9 +611,9 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="glass-panel text-center py-16 px-6 rounded-2xl border border-luxury-gold/15 shadow-inner">
             <span className="text-4xl">🔍</span>
@@ -581,7 +629,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
             </button>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Public Property Detail Showcase Modal */}
       <PublicPropertyDetailModal
@@ -592,6 +640,6 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
         }}
         property={selectedDetailProperty}
       />
-    </div>
+    </motion.div>
   );
 }

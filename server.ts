@@ -16,7 +16,8 @@ import {
   UserRole,
   PropertyType,
   PropertyStatus,
-  CompassDirection
+  CompassDirection,
+  PropertySiap
 } from "./src/types";
 
 const app = express();
@@ -30,7 +31,7 @@ const DATA_FILE = path.join(process.cwd(), "data.json");
 
 interface DatabaseSchema {
   agents: Record<string, Agent & { passwordHash: string; salt: string }>;
-  properties: Property[];
+  properties: any[];
   auditLogs: AuditLog[];
   contactMessages: ContactMessage[];
 }

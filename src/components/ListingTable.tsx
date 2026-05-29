@@ -8,6 +8,7 @@ import {
   RotateCcw, Eye, Compass, ClipboardList, UserCog, Car, HelpCircle 
 } from "lucide-react";
 import { useState } from "react";
+import { motion } from "motion/react";
 import { Property, UserRole, PropertyType, PropertyStatus, CompassDirection } from "../types";
 import { formatRupiah } from "./FeaturedProperties";
 
@@ -68,6 +69,26 @@ export default function ListingTable({
   });
 
   const isSuper = userRole === "superadmin";
+
+  const tbodyVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+      }
+    }
+  };
+
+  const rowVariants = {
+    hidden: { opacity: 0, y: 12, filter: "blur(2px)" },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      filter: "blur(0px)",
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
 
   return (
     <div className="w-full space-y-8 animate-fade-in">
@@ -240,10 +261,19 @@ export default function ListingTable({
                 <th scope="col" className="px-6 py-4 text-right">Aksi Operasional</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-luxury-gold/5 bg-[#171717]/60">
+            <motion.tbody 
+              variants={tbodyVariants}
+              initial="hidden"
+              animate="show"
+              className="divide-y divide-luxury-gold/5 bg-[#171717]/60"
+            >
               {filteredList.length > 0 ? (
                 filteredList.map((prop) => (
-                  <tr key={prop.id} className="hover:bg-luxury-gold/5 transition-colors duration-150">
+                  <motion.tr 
+                    key={prop.id} 
+                    variants={rowVariants}
+                    className="hover:bg-luxury-gold/5 transition-colors duration-150"
+                  >
                     {/* Properti & Kawasan */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
@@ -371,17 +401,17 @@ export default function ListingTable({
                         )}
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))
               ) : (
-                <tr>
+                <motion.tr variants={rowVariants}>
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
                     <span className="text-3xl block mb-2">📂</span>
                     Tidak ada properti yang sesuai dalam penyaringan {tab === "active" ? "aktif" : "arsip"} ini.
                   </td>
-                </tr>
+                </motion.tr>
               )}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
       </div>

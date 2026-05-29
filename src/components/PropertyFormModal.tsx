@@ -5,7 +5,7 @@
 
 import { X, Save, Eye } from "lucide-react";
 import { useState, useEffect, FormEvent } from "react";
-import { Property, PropertyType, PropertyStatus, CompassDirection } from "../types";
+import { Property, PropertyType, PropertyStatus, CompassDirection, PropertySiap } from "../types";
 
 interface PropertyFormModalProps {
   isOpen: boolean;
