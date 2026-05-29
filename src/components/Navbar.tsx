@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Home, Info, Mail, LogIn, LayoutDashboard, LogOut, Menu, X, Sparkles, Phone, ShieldCheck } from "lucide-react";
+import { Home, Info, Mail, LogIn, LayoutDashboard, LogOut, Menu, X, Sparkles, Phone, ShieldCheck, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import PrimePropertyLogo from "./PrimePropertyLogo";
+import { useLanguage } from "../context/LanguageContext";
 
 interface NavbarProps {
   currentPath: string;
@@ -18,6 +19,7 @@ interface NavbarProps {
 export default function Navbar({ currentPath, onNavigate, user, onLogout }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,9 +30,9 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
   }, []);
 
   const navItems = [
-    { label: "Beranda", path: "/", icon: Home },
-    { label: "Tentang Kami", path: "/about", icon: Info },
-    { label: "Hubungi Kami", path: "/contact", icon: Mail },
+    { label: t("nav.home"), path: "/", icon: Home },
+    { label: t("nav.about"), path: "/about", icon: Info },
+    { label: t("nav.contact"), path: "/contact", icon: Mail },
   ];
 
   const handleItemClick = (path: string) => {
@@ -43,6 +45,10 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
       return currentPath === "/" || currentPath === "";
     }
     return currentPath === path;
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === "id" ? "en" : "id");
   };
 
   return (
@@ -85,10 +91,10 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
               {!scrolled && (
                 <div className="hidden xl:flex flex-col border-l border-white/10 pl-4 py-1 text-left">
                   <span className="text-[8px] font-mono tracking-[0.3em] text-[#C9A961] font-extrabold uppercase">
-                    ESTABLISHED TRUST
+                    {t("nav.established")}
                   </span>
                   <span className="text-[9px] text-gray-500 font-light tracking-wide mt-0.5">
-                    Authorized Estate Provider
+                    {t("nav.authorized")}
                   </span>
                 </div>
               )}
@@ -130,6 +136,15 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
 
             {/* Right Action Hub: Secure Agent Portal */}
             <div className="hidden md:flex items-center space-x-4">
+              {/* Language Switcher */}
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center space-x-2 px-4 py-2 text-[10px] font-black tracking-widest text-gray-400 hover:text-white border border-white/10 rounded-full transition-all cursor-pointer bg-white/5"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{language.toUpperCase()}</span>
+              </button>
+
               {user ? (
                 <div className="flex items-center space-x-3 pl-3 border-l border-white/[0.08]">
                   <div className="text-right flex flex-col justify-center">
@@ -151,14 +166,14 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
                       id="btn-nav-dashboard"
                     >
                       <LayoutDashboard className="w-3.5 h-3.5" />
-                      <span>Sistem Portal</span>
+                      <span>{t("nav.system")}</span>
                     </button>
                   )}
                   
                   <button
                     onClick={onLogout}
                     className="p-2 text-gray-400 hover:text-luxury-red hover:bg-luxury-red/5 rounded-full border border-white/[0.06] hover:border-luxury-red/15 transition-all duration-300 cursor-pointer"
-                    title="Keluar Sesi (Logout)"
+                    title={t("nav.logout")}
                     id="btn-nav-logout"
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -175,13 +190,19 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
                   id="btn-nav-login"
                 >
                   <LogIn className="w-3 h-3" />
-                  <span>PORTAL AGEN</span>
+                  <span>{t("nav.portal")}</span>
                 </button>
               )}
             </div>
 
             {/* Mobile burger button */}
-            <div className="flex items-center md:hidden">
+            <div className="flex items-center md:hidden space-x-3">
+              <button
+                onClick={toggleLanguage}
+                className="p-2 text-gray-400 border border-white/10 rounded-full bg-white/5"
+              >
+                <Globe className="w-4 h-4" />
+              </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 text-gray-400 hover:text-white hover:bg-white/5 border border-white/[0.06] hover:border-white/15 rounded-full transition-all cursor-pointer"
@@ -196,76 +217,83 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
       </div>
 
       {/* Mobile Luxury Sidebar Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-luxury-black/98 border-t border-luxury-gold/20 px-4 pt-4 pb-8 space-y-2 block animate-fade-in absolute w-full left-0 right-0 shadow-2xl backdrop-blur-3xl z-40">
-          <div className="space-y-1 py-1">
-            <span className="text-[8px] font-mono tracking-[0.25em] text-[#C9A961] uppercase block pl-4 pb-2 font-bold">DIREKTORI PORTAL</span>
-            {navItems.map((item) => {
-              const isActive = isItemActive(item.path);
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => handleItemClick(item.path)}
-                  className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-[10px] font-extrabold uppercase tracking-[0.18em] transition-all cursor-pointer ${
-                    isActive
-                      ? "text-luxury-gold bg-luxury-gold/10 border-l-4 border-luxury-gold"
-                      : "text-gray-300 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {isActive && <Sparkles className="w-3.5 h-3.5 text-luxury-gold" />}
-                </button>
-              );
-            })}
-          </div>
-          
-          <div className="pt-4 border-t border-white/[0.08] mt-4 px-2">
-            {user ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between bg-white/[0.02] p-4 rounded-xl border border-white/[0.04]">
-                  <div>
-                    <span className="block text-xs font-semibold text-white tracking-wider uppercase">
-                      {user.fullName}
-                    </span>
-                    <span className="block text-[8px] tracking-[0.2em] font-mono text-luxury-gold uppercase mt-1">
-                      {user.role}
-                    </span>
-                  </div>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden bg-luxury-black/98 border-t border-luxury-gold/20 px-4 pt-4 pb-8 space-y-2 block absolute w-full left-0 right-0 shadow-2xl backdrop-blur-3xl z-40"
+          >
+            <div className="space-y-1 py-1">
+              <span className="text-[8px] font-mono tracking-[0.25em] text-[#C9A961] uppercase block pl-4 pb-2 font-bold">DIREKTORI PORTAL</span>
+              {navItems.map((item) => {
+                const isActive = isItemActive(item.path);
+                return (
                   <button
-                    onClick={onLogout}
-                    className="flex items-center space-x-1 py-1.5 px-3.5 text-[9px] font-extrabold uppercase tracking-widest text-luxury-red hover:bg-luxury-red/10 border border-luxury-red/25 rounded-md transition-colors cursor-pointer"
-                    id="btn-mobile-logout"
+                    key={item.path}
+                    onClick={() => handleItemClick(item.path)}
+                    className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-[10px] font-extrabold uppercase tracking-[0.18em] transition-all cursor-pointer ${
+                      isActive
+                        ? "text-luxury-gold bg-luxury-gold/10 border-l-4 border-luxury-gold"
+                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                    }`}
                   >
-                    <LogOut className="w-3 h-3" />
-                    <span>LOGOUT</span>
+                    <span>{item.label}</span>
+                    {isActive && <Sparkles className="w-3.5 h-3.5 text-luxury-gold" />}
+                  </button>
+                );
+              })}
+            </div>
+            
+            <div className="pt-4 border-t border-white/[0.08] mt-4 px-2">
+              {user ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between bg-white/[0.02] p-4 rounded-xl border border-white/[0.04]">
+                    <div>
+                      <span className="block text-xs font-semibold text-white tracking-wider uppercase">
+                        {user.fullName}
+                      </span>
+                      <span className="block text-[8px] tracking-[0.2em] font-mono text-luxury-gold uppercase mt-1">
+                        {user.role}
+                      </span>
+                    </div>
+                    <button
+                      onClick={onLogout}
+                      className="flex items-center space-x-1 py-1.5 px-3.5 text-[9px] font-extrabold uppercase tracking-widest text-luxury-red hover:bg-luxury-red/10 border border-luxury-red/25 rounded-md transition-colors cursor-pointer"
+                      id="btn-mobile-logout"
+                    >
+                      <LogOut className="w-3 h-3" />
+                      <span>{t("nav.logout")}</span>
+                    </button>
+                  </div>
+                  {currentPath !== "/agent/dashboard" && (
+                    <button
+                      onClick={() => handleItemClick("/agent/dashboard")}
+                      className="w-full flex items-center justify-center space-x-2 py-3.5 bg-gradient-to-r from-luxury-gold to-amber-600 text-luxury-black rounded-full text-[10px] font-extrabold uppercase tracking-widest cursor-pointer"
+                      id="btn-mobile-dashboard"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      <span>{t("nav.system")}</span>
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  <button
+                    onClick={() => handleItemClick("/agent/login")}
+                    className="w-full flex items-center justify-center space-x-2 py-3.5 bg-luxury-gold text-luxury-black rounded-full text-[10px] font-extrabold uppercase tracking-[0.2em] transition-all cursor-pointer font-bold shadow-lg"
+                    id="btn-mobile-login"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>{t("nav.portal")}</span>
                   </button>
                 </div>
-                {currentPath !== "/agent/dashboard" && (
-                  <button
-                    onClick={() => handleItemClick("/agent/dashboard")}
-                    className="w-full flex items-center justify-center space-x-2 py-3.5 bg-gradient-to-r from-luxury-gold to-amber-600 text-luxury-black rounded-full text-[10px] font-extrabold uppercase tracking-widest cursor-pointer"
-                    id="btn-mobile-dashboard"
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    <span>PORTAL MAJID</span>
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                <button
-                  onClick={() => handleItemClick("/agent/login")}
-                  className="w-full flex items-center justify-center space-x-2 py-3.5 bg-luxury-gold text-luxury-black rounded-full text-[10px] font-extrabold uppercase tracking-[0.2em] transition-all cursor-pointer font-bold shadow-lg"
-                  id="btn-mobile-login"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>MASUK PORTAL AGEN</span>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

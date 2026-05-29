@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Property, PropertyType, PropertyStatus, CompassDirection } from "../types";
 import PublicPropertyDetailModal, { getPropertyImages } from "./PublicPropertyDetailModal";
 import ImageWithFallback from "./ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 interface FeaturedPropertiesProps {
   properties: Property[];
@@ -22,6 +23,7 @@ export function formatRupiah(value: number): string {
 }
 
 export default function FeaturedProperties({ properties, urlFilters, onFilterChange }: FeaturedPropertiesProps) {
+  const { t } = useLanguage();
   // Public Detail Modal states
   const [selectedDetailProperty, setSelectedDetailProperty] = useState<Property | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -212,19 +214,19 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           <motion.div variants={heroItemVariants} className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-5 py-2 rounded-full backdrop-blur-md">
             <div className="w-2 h-2 rounded-full bg-luxury-gold animate-pulse" />
             <span className="text-[10px] font-black tracking-[0.4em] text-white uppercase subheading-luxury">
-              ESTATE & ARCHITECTURAL MASTERY
+              {t("hero.tag")}
             </span>
           </motion.div>
           
           <motion.h1 variants={heroItemVariants} className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.9] heading-luxury">
-            Masterpiece of <br />
+            {t("hero.masterpiece")} <br />
             <span className="metallic-gold">
-              Modern Business Living
+              {t("hero.modern")}
             </span>
           </motion.h1>
           
           <motion.p variants={heroItemVariants} className="text-sm sm:text-base md:text-xl text-gray-300 max-w-4xl mx-auto font-light leading-relaxed tracking-wide">
-            Harmoni ruang usaha prestisius dan hunian luxury di episentrum investasi masa depan.
+            {t("hero.desc")}
           </motion.p>
         </motion.div>
       </div>
@@ -241,8 +243,8 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           {/* Flex header row */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-white/5 mb-8">
             <div className="space-y-1">
-              <h2 className="text-xl font-black text-white tracking-tight">Pencarian Instrumen Aset</h2>
-              <p className="text-xs text-gray-400 font-medium tracking-wide">Saring spesifikasi secara presisi melalui integrasi data real-time.</p>
+              <h2 className="text-xl font-black text-white tracking-tight">{t("filter.title")}</h2>
+              <p className="text-xs text-gray-400 font-medium tracking-wide">{t("filter.desc")}</p>
             </div>
             
             {/* Control Cluster */}
@@ -256,7 +258,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                 }`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span>Filter Lanjutan</span>
+                <span>{t("filter.advanced")}</span>
                 {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
               
@@ -265,7 +267,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                 className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 px-6 py-3 rounded-xl transition-all cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                <span>Reset</span>
+                <span>{t("filter.reset")}</span>
               </button>
             </div>
           </div>
@@ -274,12 +276,12 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Search Input */}
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Spesifikasi Unit</label>
+              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.search_label")}</label>
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-luxury-gold transition-colors" />
                 <input
                   type="text"
-                  placeholder="Nama komplek, unit, atau tipe..."
+                  placeholder={t("filter.search_placeholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all placeholder:text-gray-600 font-semibold"
@@ -289,7 +291,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
 
             {/* Tipe Properti */}
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Klasifikasi Aset</label>
+              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.type_label")}</label>
               <div className="relative group">
                 <Grid className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-luxury-gold transition-colors" />
                 <select
@@ -297,16 +299,16 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                   onChange={(e) => setTipe(e.target.value)}
                   className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                 >
-                  <option value="" className="bg-luxury-black">Semua Tipe Aset</option>
-                  <option value="Ruko" className="bg-luxury-black">Ruko Komersial (High Yield)</option>
-                  <option value="Villa" className="bg-luxury-black">Villa Eksklusif (Ultra Lux)</option>
+                  <option value="" className="bg-luxury-black">{t("filter.type_all")}</option>
+                  <option value="Ruko" className="bg-luxury-black">{t("filter.type_ruko")}</option>
+                  <option value="Villa" className="bg-luxury-black">{t("filter.type_villa")}</option>
                 </select>
               </div>
             </div>
 
             {/* Kawasan / Region Select */}
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Area & Distrik</label>
+              <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.region_label")}</label>
               <div className="relative group">
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-luxury-gold transition-colors" />
                 <select
@@ -314,7 +316,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                   onChange={(e) => setKawasan(e.target.value)}
                   className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                 >
-                  <option value="" className="bg-luxury-black">Seluruh Indonesia</option>
+                  <option value="" className="bg-luxury-black">{t("filter.region_all")}</option>
                   {availableKawasan.map((k) => (
                     <option key={k} value={k} className="bg-luxury-black">{k}</option>
                   ))}
@@ -336,7 +338,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 border-t border-white/5 mt-8">
                   {/* Status Properti */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Ketersediaan</label>
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.status_label")}</label>
                     <div className="relative">
                       <Layers className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                       <select
@@ -344,16 +346,16 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                         onChange={(e) => setStatus(e.target.value)}
                         className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                       >
-                        <option value="" className="bg-luxury-black">Status Unit</option>
-                        <option value="in_stock" className="bg-luxury-black">Tersedia (Ready)</option>
-                        <option value="sold_out" className="bg-luxury-black">Terarsip (Sold)</option>
+                        <option value="" className="bg-luxury-black">{t("filter.status_all")}</option>
+                        <option value="in_stock" className="bg-luxury-black">{t("filter.status_ready")}</option>
+                        <option value="sold_out" className="bg-luxury-black">{t("filter.status_sold")}</option>
                       </select>
                     </div>
                   </div>
 
                   {/* Rentang Harga Minimum */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Budget Min (Rp)</label>
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.min_price")}</label>
                     <div className="relative">
                       <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                       <input
@@ -368,7 +370,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
 
                   {/* Rentang Harga Maksimum */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Budget Max (Rp)</label>
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.max_price")}</label>
                     <div className="relative">
                       <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                       <input
@@ -383,7 +385,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
 
                   {/* Arah Hadap */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Vektor Hadap</label>
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.facing_label")}</label>
                     <div className="relative">
                       <Compass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                       <select
@@ -391,7 +393,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                         onChange={(e) => setHadap(e.target.value)}
                         className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                       >
-                        <option value="" className="bg-luxury-black">Semua Vektor</option>
+                        <option value="" className="bg-luxury-black">{t("filter.facing_all")}</option>
                         <option value="Utara" className="bg-luxury-black">Utara</option>
                         <option value="Timur" className="bg-luxury-black">Timur</option>
                         <option value="Selatan" className="bg-luxury-black">Selatan</option>
@@ -402,7 +404,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
 
                   {/* Carport */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Kapasitas Garasi</label>
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.carport_label")}</label>
                     <div className="relative">
                       <Car className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                       <select
@@ -410,16 +412,16 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                         onChange={(e) => setCarport(e.target.value)}
                         className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                       >
-                        <option value="" className="bg-luxury-black">Semua Opsi</option>
-                        <option value="ada" className="bg-luxury-black">Tersedia Carport</option>
-                        <option value="tidak_ada" className="bg-luxury-black">Tanpa Carport</option>
+                        <option value="" className="bg-luxury-black">{t("filter.carport_all")}</option>
+                        <option value="ada" className="bg-luxury-black">{t("filter.carport_yes")}</option>
+                        <option value="tidak_ada" className="bg-luxury-black">{t("filter.carport_no")}</option>
                       </select>
                     </div>
                   </div>
 
                   {/* Readiness */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">Fase Konstruksi</label>
+                    <label className="text-[10px] font-black text-gray-500 tracking-[0.2em] uppercase">{t("filter.readiness_label")}</label>
                     <div className="relative">
                       <Layers3 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                       <select
@@ -427,10 +429,10 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                         onChange={(e) => setSiap(e.target.value)}
                         className="w-full bg-white/[0.03] text-white text-xs pl-12 pr-4 py-4 rounded-xl border border-white/5 focus:border-luxury-gold/50 focus:outline-none transition-all cursor-pointer font-semibold appearance-none"
                       >
-                        <option value="" className="bg-luxury-black">Semua Fase</option>
-                        <option value="siap_huni" className="bg-luxury-black">Siap Huni (Immediate)</option>
-                        <option value="siap_kosong" className="bg-luxury-black">Fase Pembangunan</option>
-                        <option value="siap_huni_renovasi" className="bg-luxury-black">Fase Refurbishment</option>
+                        <option value="" className="bg-luxury-black">{t("filter.readiness_all")}</option>
+                        <option value="siap_huni" className="bg-luxury-black">{t("filter.readiness_ready")}</option>
+                        <option value="siap_kosong" className="bg-luxury-black">{t("filter.readiness_process")}</option>
+                        <option value="siap_huni_renovasi" className="bg-luxury-black">{t("filter.readiness_refurb")}</option>
                       </select>
                     </div>
                   </div>
@@ -445,12 +447,12 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <SparklesIcon className="w-4 h-4 text-luxury-gold" />
-              <span className="text-[10px] font-black tracking-[0.3em] text-luxury-gold uppercase">Featured Masterpieces</span>
+              <span className="text-[10px] font-black tracking-[0.3em] text-luxury-gold uppercase">{t("card.featured")}</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Kurasi Aset Terpilih</h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">{t("card.curation")}</h2>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono text-gray-500 uppercase tracking-widest">
-            <span className="text-white font-bold">{filteredProperties.length}</span> Unit Ditemukan
+            <span className="text-white font-bold">{filteredProperties.length}</span> {t("card.found")}
           </div>
         </div>
 
@@ -469,7 +471,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.03 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
           >
             {filteredProperties.map((prop) => (
               <motion.div
@@ -530,17 +532,17 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     {/* Revealable Specs Table */}
                     <div className="grid grid-cols-2 gap-8 py-8 border-y border-white/10 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
                       <div className="space-y-1">
-                        <span className="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em]">Land Area</span>
+                        <span className="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em]">{t("card.land_area")}</span>
                         <div className="flex items-baseline gap-1">
                           <span className="text-lg font-black text-white font-mono tracking-tighter">{prop.lebar * prop.panjang}</span>
                           <span className="text-[10px] text-gray-400 font-bold uppercase">M²</span>
                         </div>
                       </div>
                       <div className="space-y-1 border-l border-white/10 pl-8">
-                        <span className="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em]">Design</span>
+                        <span className="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em]">{t("card.elevation")}</span>
                         <div className="flex items-baseline gap-1">
                           <span className="text-lg font-black text-white tracking-tighter">{prop.tingkat}</span>
-                          <span className="text-[10px] text-gray-400 font-bold uppercase">Levels</span>
+                          <span className="text-[10px] text-gray-400 font-bold uppercase">{t("card.levels")}</span>
                         </div>
                       </div>
                     </div>
@@ -548,7 +550,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                     {/* Interaction Footer */}
                     <div className="flex items-center justify-between pt-4">
                       <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.5em] mb-1.5">INVESTMENT</span>
+                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.5em] mb-1.5">{t("card.investment")}</span>
                         <span className="text-2xl font-black text-white font-mono tracking-tighter">{formatRupiah(prop.price)}</span>
                       </div>
                       <motion.button
@@ -560,7 +562,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
                         }}
                         className="px-8 py-4 bg-white text-black font-black text-[10px] tracking-[0.3em] uppercase rounded-full shadow-2xl hover:bg-luxury-gold transition-all duration-300 cursor-pointer"
                       >
-                        EXPLORE
+                        {t("card.explore")}
                       </motion.button>
                     </div>
                   </div>
@@ -575,7 +577,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
         ) : (
           <div className="glass-panel text-center py-24 px-8 rounded-3xl border border-white/5 shadow-2xl">
             <Search className="w-12 h-12 text-gray-700 mx-auto mb-6" />
-            <h3 className="text-white text-xl font-black tracking-tight">Aset Tidak Ditemukan</h3>
+            <h3 className="text-white text-xl font-black tracking-tight">{t("card.not_found")}</h3>
             <p className="text-gray-500 text-sm max-w-md mx-auto mt-3 font-medium">
               Parameter pencarian Anda terlalu spesifik. Silakan atur ulang filter untuk menemukan instrumen investasi lainnya.
             </p>
@@ -583,7 +585,7 @@ export default function FeaturedProperties({ properties, urlFilters, onFilterCha
               onClick={handleResetFilters}
               className="mt-8 inline-flex items-center space-x-3 bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] px-8 py-4 rounded-xl shadow-2xl hover:bg-gray-200 transition-all cursor-pointer"
             >
-              <span>Reset Instrumen</span>
+              <span>{t("card.reset_btn")}</span>
             </button>
           </div>
         )}
