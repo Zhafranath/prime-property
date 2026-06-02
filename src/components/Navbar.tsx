@@ -145,7 +145,7 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
                 <span>{language.toUpperCase()}</span>
               </button>
 
-              {user ? (
+              {user && (
                 <div className="flex items-center space-x-3 pl-3 border-l border-white/[0.08]">
                   <div className="text-right flex flex-col justify-center">
                     <div className="flex items-center justify-end space-x-1.5">
@@ -179,19 +179,6 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
                     <LogOut className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              ) : (
-                <button
-                  onClick={() => handleItemClick("/agent/login")}
-                  className={`flex items-center space-x-2 px-5.5 py-2.5 text-[9px] font-extrabold uppercase tracking-[0.2em] rounded-full border transition-all duration-300 cursor-pointer group ${
-                    currentPath === "/agent/login"
-                      ? "bg-luxury-gold border-luxury-gold text-luxury-black shadow-[0_0_20px_rgba(201,169,97,0.25)]"
-                      : "border-luxury-gold/30 text-luxury-gold hover:bg-luxury-gold hover:border-luxury-gold hover:text-luxury-black hover:shadow-[0_0_20px_rgba(201,169,97,0.2)]"
-                  }`}
-                  id="btn-nav-login"
-                >
-                  <LogIn className="w-3 h-3" />
-                  <span>{t("nav.portal")}</span>
-                </button>
               )}
             </div>
 
@@ -247,7 +234,7 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
             </div>
             
             <div className="pt-4 border-t border-white/[0.08] mt-4 px-2">
-              {user ? (
+              {user && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between bg-white/[0.02] p-4 rounded-xl border border-white/[0.04]">
                     <div>
@@ -277,17 +264,6 @@ export default function Navbar({ currentPath, onNavigate, user, onLogout }: Navb
                       <span>{t("nav.system")}</span>
                     </button>
                   )}
-                </div>
-              ) : (
-                <div className="space-y-2.5">
-                  <button
-                    onClick={() => handleItemClick("/agent/login")}
-                    className="w-full flex items-center justify-center space-x-2 py-3.5 bg-luxury-gold text-luxury-black rounded-full text-[10px] font-extrabold uppercase tracking-[0.2em] transition-all cursor-pointer font-bold shadow-lg"
-                    id="btn-mobile-login"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span>{t("nav.portal")}</span>
-                  </button>
                 </div>
               )}
             </div>
